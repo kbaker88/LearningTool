@@ -1,0 +1,7 @@
+﻿  math.cpp
+  main.cpp
+  language.cpp
+c:\users\kevin\documents\github\learningtool\learning\language.cpp(346): warning C4065: switch statement contains 'default' but no 'case' labels
+  Generating Code...
+  Learning.vcxproj -> C:\Users\Kevin\Documents\GitHub\LearningTool\Debug\Learning.exe
+  Learning.vcxproj -> C:\Users\Kevin\Documents\GitHub\LearningTool\Debug\Learning.pdb (Partial PDB)

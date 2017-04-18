@@ -118,6 +118,7 @@
   <ItemGroup>
     <ClInclude Include="Language.h" />
     <ClInclude Include="math.h" />
+    <ClInclude Include="utility.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="wordlist.txt" />

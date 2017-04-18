@@ -3,6 +3,9 @@
 LRESULT CALLBACK WndProc(HWND Window, UINT Message, 
 	WPARAM wParam, LPARAM lParam);
 
+LanguageState RussianToEnglish;
+MathState Math;
+
 int WINAPI WinMain(HINSTANCE Instance, HINSTANCE PrevInstance,
 	LPSTR CommandLine, int CommandShow)
 {
@@ -34,7 +37,7 @@ int WINAPI WinMain(HINSTANCE Instance, HINSTANCE PrevInstance,
 		WS_EX_CLIENTEDGE,
 		(const char*)"LanguageLearning",
 		"Language Learning",
-		WS_OVERLAPPEDWINDOW ^ WS_THICKFRAME ^ WS_MAXIMIZEBOX,
+		WS_OVERLAPPEDWINDOW | WS_THICKFRAME | WS_MAXIMIZEBOX,
 		CW_USEDEFAULT, CW_USEDEFAULT, WindowWidth, WindowHeight,
 		NULL, NULL, Instance, NULL);
 
@@ -57,13 +60,13 @@ int WINAPI WinMain(HINSTANCE Instance, HINSTANCE PrevInstance,
 		120, 10, 100, 30, Window, (HMENU)101,
 		(HINSTANCE)GetWindowLong(Window, GWL_HINSTANCE), NULL);
 
-	if (Language_LoadDatabase("wordlist.txt"))
+	if (RussianToEnglish.LoadDatabase("wordlist.txt"))
 	{
 		MessageBox(0, "No word list", 0, 0);
 		return 1;
 	}
 
-	Language_Initialize(Window);
+	RussianToEnglish.Initialize(Window);
 
 	UpdateWindow(Window);
 	ShowWindow(Window, CommandShow);
@@ -77,8 +80,8 @@ int WINAPI WinMain(HINSTANCE Instance, HINSTANCE PrevInstance,
 			TranslateMessage(&Message);
 			DispatchMessage(&Message);
 		}
-		Language_Loop();
-		Math_Loop();
+		RussianToEnglish.Loop();
+		Math.Loop();
 	}
 	return 0;
 }
@@ -99,20 +102,20 @@ LRESULT CALLBACK WndProc(HWND Window, UINT Message,
 		{
 		case 100:
 		{
-			Math_CleanUp();
-			Language_Initialize(Window);
+			Math.CleanUp();
+			RussianToEnglish.Initialize(Window);
 		} break;
 		case 101:
 		{
-			Language_CleanUp();
-			Math_Initialize(Window);
+			RussianToEnglish.CleanUp();
+			Math.Initialize(Window);
 		} break;
 		default: break;
 		}
 
 		unsigned short Command = LOWORD(wParam);
-		Language_CheckClickStates(wParam);
-		Math_CheckAnswer(wParam);
+		RussianToEnglish.CheckClickStates(wParam);
+		Math.CheckAnswer(wParam);
 		
 	} break;
 	case WM_DESTROY:

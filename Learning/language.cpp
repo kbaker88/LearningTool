@@ -1,66 +1,65 @@
 #include "Language.h"
 
-LanguageState Temporary;
-
 LRESULT CALLBACK DictionaryProc(HWND DictWindow, UINT Message,
 	WPARAM wParam, LPARAM lParam);
 
-void Language_Initialize(HWND Window)
+void LanguageState::Initialize(HWND Window)
 {
-	if (Temporary.TotalWordCount)
+	if (TotalWordCount)
 	{
-		Temporary.Window = Window;
-		Temporary.DeviceContext = GetWindowDC(Window);
+		Window = Window;
+		DeviceContext = GetWindowDC(Window);
+		Instance = (HINSTANCE)GetWindowLong(Window, GWL_HINSTANCE);
 
-		if (!Temporary.CheckButton)
+		if (!CheckButton)
 		{
-			Temporary.CheckButton = CreateWindow("BUTTON",
+			CheckButton = CreateWindow("BUTTON",
 				"Check",
 				WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-				235, 210, 100, 40, Temporary.Window, (HMENU)102,
-				(HINSTANCE)GetWindowLong(Temporary.Window,
+				235, 210, 100, 40, Window, (HMENU)102,
+				(HINSTANCE)GetWindowLong(Window,
 					GWL_HINSTANCE), NULL);
 		}
 
-		if (!Temporary.DictionaryButton)
+		if (!DictionaryButton)
 		{
-			Temporary.DictionaryButton = CreateWindow("BUTTON",
+			DictionaryButton = CreateWindow("BUTTON",
 				"Dictionary >>",
 				WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-				460, 230, 100, 20, Temporary.Window, (HMENU)104,
-				(HINSTANCE)GetWindowLong(Temporary.Window,
+				460, 230, 100, 20, Window, (HMENU)104,
+				(HINSTANCE)GetWindowLong(Window,
 					GWL_HINSTANCE), NULL);
 		}
 
-		if (!Temporary.EditWindowInput)
+		if (!EditWindowInput)
 		{
-			Temporary.EditWindowInput = CreateWindowExW(
+			EditWindowInput = CreateWindowExW(
 				0, L"EDIT", NULL,
 				WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_DLGFRAME |
 				ES_LEFT | ES_MULTILINE | ES_AUTOVSCROLL,
-				20, 150, 250, 50, Temporary.Window, (HMENU)110,
-				(HINSTANCE)GetWindowLong(Temporary.Window,
+				20, 150, 250, 50, Window, (HMENU)110,
+				(HINSTANCE)GetWindowLong(Window,
 					GWL_HINSTANCE), NULL);
 		}
 
-		if (!Temporary.EditWindowOutput)
+		if (!EditWindowOutput)
 		{
-			Temporary.EditWindowOutput = CreateWindowExW(
+			EditWindowOutput = CreateWindowExW(
 				0, L"EDIT", NULL,
 				WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_DLGFRAME |
 				ES_LEFT | ES_MULTILINE | ES_AUTOVSCROLL,
-				310, 150, 250, 50, Temporary.Window, (HMENU)111,
-				(HINSTANCE)GetWindowLong(Temporary.Window,
+				310, 150, 250, 50, Window, (HMENU)111,
+				(HINSTANCE)GetWindowLong(Window,
 					GWL_HINSTANCE), NULL);
 		}
 
-		if (Temporary.TotalWordCount > 0)
+		if (TotalWordCount > 0)
 		{
-			Temporary.CurrentWordChoice =
-				(unsigned int)(rand() % Temporary.TotalWordCount);
+			CurrentWordChoice =
+				(unsigned int)(rand() % TotalWordCount);
 		}
-		SendMessageW(Temporary.EditWindowOutput, WM_SETTEXT, 0,
-			(LPARAM)Temporary.Words[Temporary.CurrentWordChoice].Russian);
+		SendMessageW(EditWindowOutput, WM_SETTEXT, 0,
+			(LPARAM)Words[CurrentWordChoice].Russian);
 	}
 	else
 	{
@@ -68,7 +67,7 @@ void Language_Initialize(HWND Window)
 	}
 }
 
-bool Language_LoadDatabase(char* FileName)
+bool LanguageState::LoadDatabase(char* FileName)
 {
 	std::string line;
 	std::ifstream myfile(FileName);
@@ -93,23 +92,23 @@ bool Language_LoadDatabase(char* FileName)
 					{
 						Russian = false;
 						WordUnitIndex++;
-						Temporary.TotalWordCount++;
+						TotalWordCount++;
 						WordIndex = 0;
 					}
 					else
 					{
 						if (Russian)
 						{
-							Temporary.Words[WordUnitIndex].Russian[WordIndex] =
+							Words[WordUnitIndex].Russian[WordIndex] =
 								(line[i] << 8) | line[i + 1];
-							Temporary.Words[WordUnitIndex].RussianLength++;
+							Words[WordUnitIndex].RussianLength++;
 							WordIndex++;
 						}
 						else
 						{
-							Temporary.Words[WordUnitIndex].English[WordIndex] = 
+							Words[WordUnitIndex].English[WordIndex] = 
 								(line[i] << 8) | line[i + 1];
-							Temporary.Words[WordUnitIndex].EnglishLength++;
+							Words[WordUnitIndex].EnglishLength++;
 							WordIndex++;
 						}
 					}
@@ -130,38 +129,38 @@ bool Language_LoadDatabase(char* FileName)
 	}
 }
 
-void Language_Loop()
+void LanguageState::Loop()
 {
-	if (Temporary.CheckButton)
+	if (CheckButton)
 	{
-		Language_Display();
+		Display();
 	}
 }
 
-void Language_Display()
+void LanguageState::Display()
 {
-	std::string CorrectNumber = std::to_string(Temporary.CorrectCount);
-	std::string InCorrectNumber = std::to_string(Temporary.WrongCount);
+	std::string CorrectNumber = std::to_string(CorrectCount);
+	std::string InCorrectNumber = std::to_string(WrongCount);
 	char* CorrectScore = "Correct: ";
 	char* WrongScore = "Incorrect: ";
 
-	if (Temporary.DeviceContext)
+	if (DeviceContext)
 	{
-		TextOut(Temporary.DeviceContext, 29, 243, CorrectScore, 9);
-		TextOut(Temporary.DeviceContext, 29, 263, WrongScore, 11);
-		TextOut(Temporary.DeviceContext, 94, 243, CorrectNumber.c_str(),
+		TextOut(DeviceContext, 29, 243, CorrectScore, 9);
+		TextOut(DeviceContext, 29, 263, WrongScore, 11);
+		TextOut(DeviceContext, 94, 243, CorrectNumber.c_str(),
 			CorrectNumber.length());
-		TextOut(Temporary.DeviceContext, 94, 263, InCorrectNumber.c_str(),
+		TextOut(DeviceContext, 94, 263, InCorrectNumber.c_str(),
 			InCorrectNumber.length());
 	}
 }
 
-bool Language_CompareStrings()
+bool LanguageState::CompareStrings()
 {
 	const unsigned int BufferSize = 256;
 	char StringBuffer1[BufferSize];
 
-	GetWindowText(Temporary.EditWindowInput, StringBuffer1, BufferSize);
+	GetWindowText(EditWindowInput, StringBuffer1, BufferSize);
 
 	unsigned int Index = 0;
 	if (StringBuffer1[Index] == '\0')
@@ -170,10 +169,10 @@ bool Language_CompareStrings()
 	}
 	while (StringBuffer1[Index] != '\0')
 	{
-		if (Temporary.Words[Temporary.CurrentWordChoice].English[Index])
+		if (Words[CurrentWordChoice].English[Index])
 		{
 			if (StringBuffer1[Index] != 
-				Temporary.Words[Temporary.CurrentWordChoice].English[Index])
+				Words[CurrentWordChoice].English[Index])
 			{
 				return 0;
 			}
@@ -187,54 +186,55 @@ bool Language_CompareStrings()
 	return 1;
 }
 
-void Language_CheckClickStates(unsigned short Command)
+void LanguageState::CheckClickStates(unsigned short Command)
 {
 
 	switch (Command)
 	{
 	case 102:
 	{
-		if (Language_CompareStrings()) // correct
+		if (CompareStrings()) // correct
 		{
-			Temporary.CorrectCount++;
-			if (Temporary.TotalWordCount > 0)
+			CorrectCount++;
+			if (TotalWordCount > 0)
 			{
-				Temporary.CurrentWordChoice = 
-					(unsigned int)(rand() % Temporary.TotalWordCount);
+				CurrentWordChoice = 
+					(unsigned int)(rand() % TotalWordCount);
 			}
-			SendMessageW(Temporary.EditWindowOutput, WM_SETTEXT, 0, 
-				(LPARAM)Temporary.Words[Temporary.CurrentWordChoice].Russian);
-			SendMessageW(Temporary.EditWindowInput,
+			SendMessageW(EditWindowOutput, WM_SETTEXT, 0, 
+				(LPARAM)Words[CurrentWordChoice].Russian);
+			SendMessageW(EditWindowInput,
 				WM_SETTEXT, 0, (LPARAM)"");
 		}
 		else
 		{
-			Temporary.WrongCount++;
-			SendMessageW(Temporary.EditWindowOutput, WM_SETTEXT, 0, 
-				(LPARAM)Temporary.Words[Temporary.CurrentWordChoice].Russian);
-			SendMessageW(Temporary.EditWindowInput,
+			WrongCount++;
+			SendMessageW(EditWindowOutput, WM_SETTEXT, 0, 
+				(LPARAM)Words[CurrentWordChoice].Russian);
+			SendMessageW(EditWindowInput,
 				WM_SETTEXT, 0, (LPARAM)"");
 		}
 	} break;
 	case 104:
 	{
-		Language_DisplayDictionary();
+		DisplayDictionary();
 	}
 	default: break;
 	}
 }
 
-void Language_DisplayDictionary()
+void LanguageState::DisplayDictionary()
 {
-	if (Temporary.Dictionary)
+	if (Dictionary)
 	{
-		DestroyWindow(Temporary.Dictionary);
-		Temporary.Dictionary = 0;
+		DestroyWindow(DictionaryList);
+		DictionaryList = 0;
+		DestroyWindow(Dictionary);
+		Dictionary = 0;
 	}
 	else
 	{
 		WNDCLASSEX DictWindowClassStruct;
-		HINSTANCE Instance = (HINSTANCE)GetWindowLong(Temporary.Window, GWL_HINSTANCE);
 		
 		if (!GetClassInfoEx(Instance, "Dictionary", &DictWindowClassStruct))
 		{
@@ -258,74 +258,88 @@ void Language_DisplayDictionary()
 			}
 		}
 
-		Temporary.Dictionary = CreateWindowEx(
+		Dictionary = CreateWindowEx(
 			WS_EX_CLIENTEDGE,
 			(const char*)"Dictionary",
 			"Dictionary",
 			WS_OVERLAPPEDWINDOW | WS_BORDER | WS_VISIBLE,
 			CW_USEDEFAULT, CW_USEDEFAULT, 300, 300,
-			Temporary.Window, NULL, Instance, NULL);
+			Window, NULL, Instance, NULL);
 
-		if (Temporary.Dictionary)
+		if (Dictionary)
 		{
-			UpdateWindow(Temporary.Dictionary);
-			ShowWindow(Temporary.Dictionary, SW_SHOW);
+			UpdateWindow(Dictionary);
+			ShowWindow(Dictionary, SW_SHOW);
+
+			if (!DictionaryList)
+			{
+				DictionaryList = CreateWindowExW(
+					0, L"LISTBOX", NULL,
+					WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_DLGFRAME |
+					ES_LEFT | ES_MULTILINE | ES_AUTOVSCROLL,
+					20, 20, 240, 260, Dictionary, (HMENU)210,
+					Instance, NULL);
+			}
 		}
 		else
 		{
-			unsigned long Error = GetLastError();
 			MessageBox(NULL, "Dictionary Window Did Not Create.",
 				"Error!", MB_ICONEXCLAMATION | MB_OK);
 		}
 	}
 }
 
-bool Language_ChangeBackground()
+bool LanguageState::ChangeBackground()
 {
-
 	return 0;
 }
 
-void Language_CleanUp()
+void LanguageState::CleanUp()
 {
-	if (Temporary.CheckButton)
+	if (CheckButton)
 	{
-		DestroyWindow(Temporary.CheckButton);
-		Temporary.CheckButton = 0;
+		DestroyWindow(CheckButton);
+		CheckButton = 0;
 	}
 
-	if (Temporary.DictionaryButton)
+	if (DictionaryButton)
 	{
-		DestroyWindow(Temporary.DictionaryButton);
-		Temporary.DictionaryButton = 0;
+		DestroyWindow(DictionaryButton);
+		DictionaryButton = 0;
 	}
 
-	if (Temporary.Dictionary)
+	if (DictionaryList)
 	{
-		DestroyWindow(Temporary.Dictionary);
-		Temporary.Dictionary = 0;
+		DestroyWindow(DictionaryList);
+		DictionaryList = 0;
 	}
 
-	if (Temporary.EditWindowInput)
+	if (Dictionary)
 	{
-		DestroyWindow(Temporary.EditWindowInput);
-		Temporary.EditWindowInput = 0;
+		DestroyWindow(Dictionary);
+		Dictionary = 0;
 	}
 
-	if (Temporary.EditWindowOutput)
+	if (EditWindowInput)
 	{
-		DestroyWindow(Temporary.EditWindowOutput);
-		Temporary.EditWindowOutput = 0;
+		DestroyWindow(EditWindowInput);
+		EditWindowInput = 0;
 	}
 
-	if (Temporary.DeviceContext)
+	if (EditWindowOutput)
 	{
-		std::string ClearLine = "                    ";
-		TextOut(Temporary.DeviceContext, 29, 243, ClearLine.c_str(), 20);
-		TextOut(Temporary.DeviceContext, 29, 263, ClearLine.c_str(), 20);
+		DestroyWindow(EditWindowOutput);
+		EditWindowOutput = 0;
+	}
 
-		ReleaseDC(Temporary.Window, Temporary.DeviceContext);
-		Temporary.DeviceContext = 0;
+	if (DeviceContext)
+	{
+		std::string ClearLine = "                         ";
+		TextOut(DeviceContext, 29, 243, ClearLine.c_str(), 23);
+		TextOut(DeviceContext, 29, 263, ClearLine.c_str(), 23);
+
+		ReleaseDC(Window, DeviceContext);
+		DeviceContext = 0;
 	}
 }
 
@@ -340,10 +354,6 @@ LRESULT CALLBACK DictionaryProc(HWND DictWindow, UINT Message,
 		break;
 	case WM_COMMAND:
 	{
-		switch (LOWORD(wParam))
-		{
-		default: break;
-		}
 	} break;
 	case WM_DESTROY:
 		break;

@@ -1,78 +1,76 @@
 #include "math.h"
 
-MathState Temporary;
-
-void Math_Initialize(HWND Window)
+void MathState::Initialize(HWND Window)
 {
-	Temporary.Window = Window;
-	Temporary.DeviceContext = GetWindowDC(Window);
-	if (!Temporary.EditA)
+	Window = Window;
+	DeviceContext = GetWindowDC(Window);
+	if (!EditA)
 	{
-		Temporary.EditA = CreateWindowExW(
+		EditA = CreateWindowExW(
 			0, L"EDIT", NULL,
 			WS_CHILD | WS_VISIBLE | WS_DLGFRAME |
 			ES_LEFT,
-			70, 150, 50, 30, Temporary.Window, (HMENU)112,
-			(HINSTANCE)GetWindowLong(Temporary.Window,
+			70, 150, 50, 30, Window, (HMENU)112,
+			(HINSTANCE)GetWindowLong(Window,
 				GWL_HINSTANCE), NULL);
 	}
 
-	if (!Temporary.EditB)
+	if (!EditB)
 	{
-		Temporary.EditB = CreateWindowExW(
+		EditB = CreateWindowExW(
 			0, L"EDIT", NULL,
 			WS_CHILD | WS_VISIBLE | WS_DLGFRAME |
 			ES_LEFT,
-			150, 150, 50, 30, Temporary.Window, (HMENU)113,
-			(HINSTANCE)GetWindowLong(Temporary.Window,
+			150, 150, 50, 30, Window, (HMENU)113,
+			(HINSTANCE)GetWindowLong(Window,
 				GWL_HINSTANCE), NULL);
 	}
 
-	if (!Temporary.EditC)
+	if (!EditC)
 	{
-		Temporary.EditC = CreateWindowExW(
+		EditC = CreateWindowExW(
 			0, L"EDIT", NULL,
 			WS_CHILD | WS_VISIBLE | WS_DLGFRAME |
 			ES_LEFT,
-			230, 150, 50, 30, Temporary.Window, (HMENU)114,
-			(HINSTANCE)GetWindowLong(Temporary.Window, 
+			230, 150, 50, 30, Window, (HMENU)114,
+			(HINSTANCE)GetWindowLong(Window, 
 				GWL_HINSTANCE), NULL);
 	}
 
-	if (!Temporary.CheckButton)
+	if (!CheckButton)
 	{
-		Temporary.CheckButton = CreateWindow("BUTTON",
+		CheckButton = CreateWindow("BUTTON",
 			"Check",
 			WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-			235, 210, 100, 40, Temporary.Window, (HMENU)103,
-			(HINSTANCE)GetWindowLong(Temporary.Window,
+			235, 210, 100, 40, Window, (HMENU)103,
+			(HINSTANCE)GetWindowLong(Window,
 				GWL_HINSTANCE), NULL);
 	}
 
-	Math_Display(0);
+	Display(0);
 }
 
-void Math_Loop()
+void MathState::Loop()
 {
 }
 
-void Math_AdditionDisplay()
+void MathState::AdditionDisplay()
 {
-	std::string CorrectNumber = std::to_string(Temporary.CorrectCount);
-	std::string InCorrectNumber = std::to_string(Temporary.WrongCount);
+	std::string CorrectNumber = std::to_string(CorrectCount);
+	std::string InCorrectNumber = std::to_string(WrongCount);
 	char* CorrectScore = "Correct: ";
 	char* WrongScore = "Incorrect: ";
 
-	if (Temporary.DeviceContext)
+	if (DeviceContext)
 	{
-		TextOut(Temporary.DeviceContext, 140, 190, "+  ", 3);
-		TextOut(Temporary.DeviceContext, 220, 190, "=", 1);
+		TextOut(DeviceContext, 140, 190, "+  ", 3);
+		TextOut(DeviceContext, 220, 190, "=", 1);
 
-		TextOut(Temporary.DeviceContext, 29, 243, CorrectScore, 9);
-		TextOut(Temporary.DeviceContext, 29, 263, WrongScore, 11);
-		TextOut(Temporary.DeviceContext, 94, 243, CorrectNumber.c_str(),
+		TextOut(DeviceContext, 29, 243, CorrectScore, 9);
+		TextOut(DeviceContext, 29, 263, WrongScore, 11);
+		TextOut(DeviceContext, 94, 243, CorrectNumber.c_str(),
 			CorrectNumber.length());
-		TextOut(Temporary.DeviceContext, 94, 263, InCorrectNumber.c_str(),
+		TextOut(DeviceContext, 94, 263, InCorrectNumber.c_str(),
 			InCorrectNumber.length());
 	}
 	else
@@ -85,61 +83,61 @@ void Math_AdditionDisplay()
 
 	unsigned short BufferA[16] = {};
 	unsigned short BufferB[16] = {};
-	Math_IntToChar(NewA, BufferA);
-	Math_IntToChar(NewB, BufferB);
-	SendMessageW(Temporary.EditA,
+	Utility_IntToChar(NewA, BufferA);
+	Utility_IntToChar(NewB, BufferB);
+	SendMessageW(EditA,
 		WM_SETTEXT, 0, (LPARAM)BufferA);
-	SendMessageW(Temporary.EditB,
+	SendMessageW(EditB,
 		WM_SETTEXT, 0, (LPARAM)BufferB);
 
-	SendMessageW(Temporary.EditC, WM_SETTEXT, 0,
+	SendMessageW(EditC, WM_SETTEXT, 0,
 		(LPARAM)"");
 }
 
-void Math_AdditionTest()
+void MathState::AdditionTest()
 {
 	const unsigned int BufferSize = 16;
 	char BufferA[BufferSize] = {};
 	char BufferB[BufferSize] = {};
 	char BufferC[BufferSize] = {};
-	GetWindowText(Temporary.EditA, BufferA, BufferSize);
+	GetWindowText(EditA, BufferA, BufferSize);
 	int A = atoi(BufferA);
-	GetWindowText(Temporary.EditB, BufferB, BufferSize);
+	GetWindowText(EditB, BufferB, BufferSize);
 	int B = atoi(BufferB);
-	GetWindowText(Temporary.EditC, BufferC, BufferSize);
+	GetWindowText(EditC, BufferC, BufferSize);
 	int UserC = atoi(BufferC);
 
 	int C = A + B;
 
 	if (C == UserC)
 	{
-		Temporary.CorrectCount++;
-		Math_Display(1);
+		CorrectCount++;
+		Display(1);
 	}
 	else
 	{
-		Temporary.WrongCount++;
-		Math_Display(2);
+		WrongCount++;
+		Display(2);
 	}
 }
 
-void Math_SubtractionDisplay()
+void MathState::SubtractionDisplay()
 {
-	std::string CorrectNumber = std::to_string(Temporary.CorrectCount);
-	std::string InCorrectNumber = std::to_string(Temporary.WrongCount);
+	std::string CorrectNumber = std::to_string(CorrectCount);
+	std::string InCorrectNumber = std::to_string(WrongCount);
 	char* CorrectScore = "Correct: ";
 	char* WrongScore = "Incorrect: ";
 
-	if (Temporary.DeviceContext)
+	if (DeviceContext)
 	{
-		TextOut(Temporary.DeviceContext, 140, 190, " - ", 3);
-		TextOut(Temporary.DeviceContext, 220, 190, "=", 1);
+		TextOut(DeviceContext, 140, 190, " - ", 3);
+		TextOut(DeviceContext, 220, 190, "=", 1);
 
-		TextOut(Temporary.DeviceContext, 29, 243, CorrectScore, 9);
-		TextOut(Temporary.DeviceContext, 29, 263, WrongScore, 11);
-		TextOut(Temporary.DeviceContext, 94, 243, CorrectNumber.c_str(),
+		TextOut(DeviceContext, 29, 243, CorrectScore, 9);
+		TextOut(DeviceContext, 29, 263, WrongScore, 11);
+		TextOut(DeviceContext, 94, 243, CorrectNumber.c_str(),
 			CorrectNumber.length());
-		TextOut(Temporary.DeviceContext, 94, 263, InCorrectNumber.c_str(),
+		TextOut(DeviceContext, 94, 263, InCorrectNumber.c_str(),
 			InCorrectNumber.length());
 	}
 	else
@@ -152,61 +150,61 @@ void Math_SubtractionDisplay()
 
 	unsigned short BufferA[16] = {};
 	unsigned short BufferB[16] = {};
-	Math_IntToChar(NewA, BufferA);
-	Math_IntToChar(NewB, BufferB);
-	SendMessageW(Temporary.EditA,
+	Utility_IntToChar(NewA, BufferA);
+	Utility_IntToChar(NewB, BufferB);
+	SendMessageW(EditA,
 		WM_SETTEXT, 0, (LPARAM)BufferA);
-	SendMessageW(Temporary.EditB,
+	SendMessageW(EditB,
 		WM_SETTEXT, 0, (LPARAM)BufferB);
 
-	SendMessageW(Temporary.EditC, WM_SETTEXT, 0,
+	SendMessageW(EditC, WM_SETTEXT, 0,
 		(LPARAM)"");
 }
 
-void Math_SubtractionTest()
+void MathState::SubtractionTest()
 {
 	const unsigned int BufferSize = 16;
 	char BufferA[BufferSize] = {};
 	char BufferB[BufferSize] = {};
 	char BufferC[BufferSize] = {};
-	GetWindowText(Temporary.EditA, BufferA, BufferSize);
+	GetWindowText(EditA, BufferA, BufferSize);
 	int A = atoi(BufferA);
-	GetWindowText(Temporary.EditB, BufferB, BufferSize);
+	GetWindowText(EditB, BufferB, BufferSize);
 	int B = atoi(BufferB);
-	GetWindowText(Temporary.EditC, BufferC, BufferSize);
+	GetWindowText(EditC, BufferC, BufferSize);
 	int UserC = atoi(BufferC);
 
 	int C = A - B;
 
 	if (C == UserC)
 	{
-		Temporary.CorrectCount++;
-		Math_Display(1);
+		CorrectCount++;
+		Display(1);
 	}
 	else
 	{
-		Temporary.WrongCount++;
-		Math_Display(2);
+		WrongCount++;
+		Display(2);
 	}
 }
 
-void Math_MultiplicationDisplay()
+void MathState::MultiplicationDisplay()
 {
-	std::string CorrectNumber = std::to_string(Temporary.CorrectCount);
-	std::string InCorrectNumber = std::to_string(Temporary.WrongCount);
+	std::string CorrectNumber = std::to_string(CorrectCount);
+	std::string InCorrectNumber = std::to_string(WrongCount);
 	char* CorrectScore = "Correct: ";
 	char* WrongScore = "Incorrect: ";
 
-	if (Temporary.DeviceContext)
+	if (DeviceContext)
 	{
-		TextOut(Temporary.DeviceContext, 140, 190, "x  ", 3);
-		TextOut(Temporary.DeviceContext, 220, 190, "=", 1);
+		TextOut(DeviceContext, 140, 190, "x  ", 3);
+		TextOut(DeviceContext, 220, 190, "=", 1);
 
-		TextOut(Temporary.DeviceContext, 29, 243, CorrectScore, 9);
-		TextOut(Temporary.DeviceContext, 29, 263, WrongScore, 11);
-		TextOut(Temporary.DeviceContext, 94, 243, CorrectNumber.c_str(),
+		TextOut(DeviceContext, 29, 243, CorrectScore, 9);
+		TextOut(DeviceContext, 29, 263, WrongScore, 11);
+		TextOut(DeviceContext, 94, 243, CorrectNumber.c_str(),
 			CorrectNumber.length());
-		TextOut(Temporary.DeviceContext, 94, 263, InCorrectNumber.c_str(),
+		TextOut(DeviceContext, 94, 263, InCorrectNumber.c_str(),
 			InCorrectNumber.length());
 	}
 	else
@@ -219,61 +217,61 @@ void Math_MultiplicationDisplay()
 
 	unsigned short BufferA[16] = {};
 	unsigned short BufferB[16] = {};
-	Math_IntToChar(NewA, BufferA);
-	Math_IntToChar(NewB, BufferB);
-	SendMessageW(Temporary.EditA,
+	Utility_IntToChar(NewA, BufferA);
+	Utility_IntToChar(NewB, BufferB);
+	SendMessageW(EditA,
 		WM_SETTEXT, 0, (LPARAM)BufferA);
-	SendMessageW(Temporary.EditB,
+	SendMessageW(EditB,
 		WM_SETTEXT, 0, (LPARAM)BufferB);
 
-	SendMessageW(Temporary.EditC, WM_SETTEXT, 0,
+	SendMessageW(EditC, WM_SETTEXT, 0,
 		(LPARAM)"");
 }
 
-void Math_MultiplicationTest()
+void MathState::MultiplicationTest()
 {
 	const unsigned int BufferSize = 16;
 	char BufferA[BufferSize] = {};
 	char BufferB[BufferSize] = {};
 	char BufferC[BufferSize] = {};
-	GetWindowText(Temporary.EditA, BufferA, BufferSize);
+	GetWindowText(EditA, BufferA, BufferSize);
 	int A = atoi(BufferA);
-	GetWindowText(Temporary.EditB, BufferB, BufferSize);
+	GetWindowText(EditB, BufferB, BufferSize);
 	int B = atoi(BufferB);
-	GetWindowText(Temporary.EditC, BufferC, BufferSize);
+	GetWindowText(EditC, BufferC, BufferSize);
 	int UserC = atoi(BufferC);
 
 	int C = A * B;
 
 	if (C == UserC)
 	{
-		Temporary.CorrectCount++;
-		Math_Display(1);
+		CorrectCount++;
+		Display(1);
 	}
 	else
 	{
-		Temporary.WrongCount++;
-		Math_Display(2);
+		WrongCount++;
+		Display(2);
 	}
 }
 
-void Math_DivisonDisplay()
+void MathState::DivisonDisplay()
 {
-	std::string CorrectNumber = std::to_string(Temporary.CorrectCount);
-	std::string InCorrectNumber = std::to_string(Temporary.WrongCount);
+	std::string CorrectNumber = std::to_string(CorrectCount);
+	std::string InCorrectNumber = std::to_string(WrongCount);
 	char* CorrectScore = "Correct: ";
 	char* WrongScore = "Incorrect: ";
 
-	if (Temporary.DeviceContext)
+	if (DeviceContext)
 	{
-		TextOut(Temporary.DeviceContext, 140, 190, "%", 1);
-		TextOut(Temporary.DeviceContext, 220, 190, "=", 1);
+		TextOut(DeviceContext, 140, 190, "%", 1);
+		TextOut(DeviceContext, 220, 190, "=", 1);
 
-		TextOut(Temporary.DeviceContext, 29, 243, CorrectScore, 9);
-		TextOut(Temporary.DeviceContext, 29, 263, WrongScore, 11);
-		TextOut(Temporary.DeviceContext, 94, 243, CorrectNumber.c_str(),
+		TextOut(DeviceContext, 29, 243, CorrectScore, 9);
+		TextOut(DeviceContext, 29, 263, WrongScore, 11);
+		TextOut(DeviceContext, 94, 243, CorrectNumber.c_str(),
 			CorrectNumber.length());
-		TextOut(Temporary.DeviceContext, 94, 263, InCorrectNumber.c_str(),
+		TextOut(DeviceContext, 94, 263, InCorrectNumber.c_str(),
 			InCorrectNumber.length());
 	}
 	else
@@ -291,28 +289,28 @@ void Math_DivisonDisplay()
 
 	unsigned short BufferA[16] = {};
 	unsigned short BufferB[16] = {};
-	Math_IntToChar(NewA, BufferA);
-	Math_IntToChar(NewB, BufferB);
-	SendMessageW(Temporary.EditA,
+	Utility_IntToChar(NewA, BufferA);
+	Utility_IntToChar(NewB, BufferB);
+	SendMessageW(EditA,
 		WM_SETTEXT, 0, (LPARAM)BufferA);
-	SendMessageW(Temporary.EditB,
+	SendMessageW(EditB,
 		WM_SETTEXT, 0, (LPARAM)BufferB);
 
-	SendMessageW(Temporary.EditC, WM_SETTEXT, 0,
+	SendMessageW(EditC, WM_SETTEXT, 0,
 		(LPARAM)"");
 }
 
-void Math_DivisionTest()
+void MathState::DivisionTest()
 {
 	const unsigned int BufferSize = 16;
 	char BufferA[BufferSize] = {};
 	char BufferB[BufferSize] = {};
 	char BufferC[BufferSize] = {};
-	GetWindowText(Temporary.EditA, BufferA, BufferSize);
+	GetWindowText(EditA, BufferA, BufferSize);
 	int A = atoi(BufferA);
-	GetWindowText(Temporary.EditB, BufferB, BufferSize);
+	GetWindowText(EditB, BufferB, BufferSize);
 	int B = atoi(BufferB);
-	GetWindowText(Temporary.EditC, BufferC, BufferSize);
+	GetWindowText(EditC, BufferC, BufferSize);
 	int UserC = atoi(BufferC);
 
 	int C;
@@ -327,188 +325,150 @@ void Math_DivisionTest()
 
 	if (C == UserC)
 	{
-		Temporary.CorrectCount++;
-		Math_Display(1);
+		CorrectCount++;
+		Display(1);
 	}
 	else
 	{
-		Temporary.WrongCount++;
-		Math_Display(2);
+		WrongCount++;
+		Display(2);
 	}
 }
 
-void Math_Display(unsigned int SolutionState)
+void MathState::Display(unsigned int SolutionState)
 {
 	if (SolutionState != 2)
 	{
-		Temporary.ProblemState = ((unsigned int)rand() % 4);
+		ProblemState = ((unsigned int)rand() % 4);
 	}
 
-	switch (Temporary.ProblemState)
+	switch (ProblemState)
 	{
 	case 0:
 	{
 		if (SolutionState == 2)
 		{
-			SendMessageW(Temporary.EditC, WM_SETTEXT, 0,
+			SendMessageW(EditC, WM_SETTEXT, 0,
 				(LPARAM)"");
 		
-			std::string InCorrectNumber = std::to_string(Temporary.WrongCount);
-			TextOut(Temporary.DeviceContext, 94, 263, InCorrectNumber.c_str(),
+			std::string InCorrectNumber = std::to_string(WrongCount);
+			TextOut(DeviceContext, 94, 263, InCorrectNumber.c_str(),
 				InCorrectNumber.length());
 		}
 		else
 		{
-			Math_AdditionDisplay();
+			AdditionDisplay();
 		}
 	} break;
 	case 1:
 	{
 		if (SolutionState == 2)
 		{
-			SendMessageW(Temporary.EditC, WM_SETTEXT, 0,
+			SendMessageW(EditC, WM_SETTEXT, 0,
 				(LPARAM)"");
 
-			std::string InCorrectNumber = std::to_string(Temporary.WrongCount);
-			TextOut(Temporary.DeviceContext, 94, 263, InCorrectNumber.c_str(),
+			std::string InCorrectNumber = std::to_string(WrongCount);
+			TextOut(DeviceContext, 94, 263, InCorrectNumber.c_str(),
 				InCorrectNumber.length());
 		}
 		else
 		{
-			Math_SubtractionDisplay();
+			SubtractionDisplay();
 		}
 	} break;
 	case 2:
 	{
 		if (SolutionState == 2)
 		{
-			SendMessageW(Temporary.EditC, WM_SETTEXT, 0,
+			SendMessageW(EditC, WM_SETTEXT, 0,
 				(LPARAM)"");
 		
-			std::string InCorrectNumber = std::to_string(Temporary.WrongCount);
-			TextOut(Temporary.DeviceContext, 94, 263, InCorrectNumber.c_str(),
+			std::string InCorrectNumber = std::to_string(WrongCount);
+			TextOut(DeviceContext, 94, 263, InCorrectNumber.c_str(),
 				InCorrectNumber.length());
 		}
 		else
 		{
-			Math_MultiplicationDisplay();
+			MultiplicationDisplay();
 		}
 	} break;
 	case 3:
 	{
 		if (SolutionState == 2)
 		{
-			SendMessageW(Temporary.EditC, WM_SETTEXT, 0,
+			SendMessageW(EditC, WM_SETTEXT, 0,
 				(LPARAM)"");
 		
-			std::string InCorrectNumber = std::to_string(Temporary.WrongCount);
-			TextOut(Temporary.DeviceContext, 94, 263, InCorrectNumber.c_str(),
+			std::string InCorrectNumber = std::to_string(WrongCount);
+			TextOut(DeviceContext, 94, 263, InCorrectNumber.c_str(),
 				InCorrectNumber.length());
 		}
 		else
 		{
-			Math_DivisonDisplay();
+			DivisonDisplay();
 		}
 	} break;
 	default: break;
 	}
 }
 
-void Math_CheckAnswer(unsigned short Command)
+void MathState::CheckAnswer(unsigned short Command)
 {
 	if (Command == 103)
 	{
-		switch (Temporary.ProblemState)
+		switch (ProblemState)
 		{
 		case 0:
 		{
-			Math_AdditionTest();
+			AdditionTest();
 		} break;
 		case 1:
 		{
-			Math_SubtractionTest();
+			SubtractionTest();
 		} break;
 		case 2:
 		{
-			Math_MultiplicationTest();
+			MultiplicationTest();
 		} break;
 		case 3:
 		{
-			Math_DivisionTest();
+			DivisionTest();
 		} break;
 		default: break;
 		}
 
-	} 
-}
-
-void Math_IntToChar(int Number, unsigned short* CharBuffer)
-{
-	unsigned short Buffer[16] = {};
-	unsigned int Index = 0;
-	unsigned int Length = 0;
-
-	if (Number != 0)
-	{
-		while (Number > 0)
-		{
-			char Hold = (Number % 10) + 48;
-			Number = Number / 10;
-			Buffer[Index] = Hold;
-			Length++;
-			Index++;
-		}
-	}
-	else
-	{
-		Buffer[Index] = 48;
-	}
-
-	Index = 0;
-	if (Length > 1)
-	{
-		for (int i = Length - 1; i >= 0; i--)
-		{
-			CharBuffer[Index] = Buffer[i];
-			Index++;
-		}
-	}
-	else
-	{
-		CharBuffer[0] = Buffer[0];
 	}
 }
 
-
-void Math_CleanUp()
+void MathState::CleanUp()
 {
-	if (Temporary.CheckButton)
+	if (CheckButton)
 	{
-		DestroyWindow(Temporary.CheckButton);
-		Temporary.CheckButton = 0;
+		DestroyWindow(CheckButton);
+		CheckButton = 0;
 	}
-	if (Temporary.EditA)
+	if (EditA)
 	{
-		DestroyWindow(Temporary.EditA);
-		Temporary.EditA = 0;
+		DestroyWindow(EditA);
+		EditA = 0;
 	}
-	if (Temporary.EditB)
+	if (EditB)
 	{
-		DestroyWindow(Temporary.EditB);
-		Temporary.EditB = 0;
+		DestroyWindow(EditB);
+		EditB = 0;
 	}
-	if (Temporary.EditC)
+	if (EditC)
 	{
-		DestroyWindow(Temporary.EditC);
-		Temporary.EditC = 0;
+		DestroyWindow(EditC);
+		EditC = 0;
 	}
-	if (Temporary.DeviceContext)
+	if (DeviceContext)
 	{
-		std::string ClearLine = "                    ";
-		TextOut(Temporary.DeviceContext, 29, 243, ClearLine.c_str(), 20);
-		TextOut(Temporary.DeviceContext, 29, 263, ClearLine.c_str(), 20);
+		std::string ClearLine = "                       ";
+		TextOut(DeviceContext, 29, 243, ClearLine.c_str(), 23);
+		TextOut(DeviceContext, 29, 263, ClearLine.c_str(), 23);
 
-		ReleaseDC(Temporary.Window, Temporary.DeviceContext);
-		Temporary.DeviceContext = 0;
+		ReleaseDC(Window, DeviceContext);
+		DeviceContext = 0;
 	}
 }

@@ -410,6 +410,7 @@ void MathState::Display(unsigned int SolutionState)
 	} break;
 	default: break;
 	}
+	SetFocus(EditC);
 }
 
 void MathState::CheckAnswer(unsigned short Command)

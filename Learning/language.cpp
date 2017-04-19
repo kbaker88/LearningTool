@@ -60,6 +60,8 @@ void LanguageState::Initialize(HWND Window)
 		}
 		SendMessageW(EditWindowOutput, WM_SETTEXT, 0,
 			(LPARAM)Words[CurrentWordChoice].Russian);
+
+		SetFocus(EditWindowInput);
 	}
 	else
 	{
@@ -214,6 +216,7 @@ void LanguageState::CheckClickStates(unsigned short Command)
 			SendMessageW(EditWindowInput,
 				WM_SETTEXT, 0, (LPARAM)"");
 		}
+		SetFocus(EditWindowInput);
 	} break;
 	case 104:
 	{
@@ -262,7 +265,7 @@ void LanguageState::DisplayDictionary()
 			WS_EX_CLIENTEDGE,
 			(const char*)"Dictionary",
 			"Dictionary",
-			WS_OVERLAPPEDWINDOW | WS_BORDER | WS_VISIBLE,
+			WS_BORDER | WS_VISIBLE,
 			CW_USEDEFAULT, CW_USEDEFAULT, 300, 300,
 			Window, NULL, Instance, NULL);
 
@@ -277,8 +280,12 @@ void LanguageState::DisplayDictionary()
 					0, L"LISTBOX", NULL,
 					WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_DLGFRAME |
 					ES_LEFT | ES_MULTILINE | ES_AUTOVSCROLL,
-					20, 20, 240, 260, Dictionary, (HMENU)210,
+					10, 10, 260, 245, Dictionary, (HMENU)210,
 					Instance, NULL);
+
+				// LB_INITSTORAGE Initializing storage later to speed it up
+				SendMessage(DictionaryList, LB_ADDSTRING, 0,
+					(LPARAM)"Testing");//Words[0].English);
 			}
 		}
 		else

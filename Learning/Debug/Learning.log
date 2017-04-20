@@ -1,6 +1,16 @@
 ﻿  math.cpp
+c:\users\kevin\documents\github\learningtool\learning\utility.h(47): error C2562: 'Utility_IntToChar': 'void' function returning a value
+  c:\users\kevin\documents\github\learningtool\learning\utility.h(12): note: see declaration of 'Utility_IntToChar'
+c:\users\kevin\documents\github\learningtool\learning\utility.h(60): error C2562: 'Utility_IntToChar': 'void' function returning a value
+  c:\users\kevin\documents\github\learningtool\learning\utility.h(12): note: see declaration of 'Utility_IntToChar'
   main.cpp
+c:\users\kevin\documents\github\learningtool\learning\utility.h(47): error C2562: 'Utility_IntToChar': 'void' function returning a value
+  c:\users\kevin\documents\github\learningtool\learning\utility.h(12): note: see declaration of 'Utility_IntToChar'
+c:\users\kevin\documents\github\learningtool\learning\utility.h(60): error C2562: 'Utility_IntToChar': 'void' function returning a value
+  c:\users\kevin\documents\github\learningtool\learning\utility.h(12): note: see declaration of 'Utility_IntToChar'
   language.cpp
+c:\users\kevin\documents\github\learningtool\learning\utility.h(47): error C2562: 'Utility_IntToChar': 'void' function returning a value
+  c:\users\kevin\documents\github\learningtool\learning\utility.h(12): note: see declaration of 'Utility_IntToChar'
+c:\users\kevin\documents\github\learningtool\learning\utility.h(60): error C2562: 'Utility_IntToChar': 'void' function returning a value
+  c:\users\kevin\documents\github\learningtool\learning\utility.h(12): note: see declaration of 'Utility_IntToChar'
   Generating Code...
-  Learning.vcxproj -> C:\Users\kevin\Documents\GitHub\LearningTool\Debug\Learning.exe
-  Learning.vcxproj -> C:\Users\kevin\Documents\GitHub\LearningTool\Debug\Learning.pdb (Partial PDB)

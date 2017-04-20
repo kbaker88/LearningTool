@@ -36,13 +36,29 @@ static void Utility_IntToChar(int Number, unsigned short* CharBuffer)
 	{
 		for (int i = Length - 1; i >= 0; i--)
 		{
-			CharBuffer[Index] = Buffer[i];
-			Index++;
+			if (CharBuffer[Index])
+			{
+				CharBuffer[Index] = Buffer[i];
+				Index++;
+			}
+			else
+			{
+				// TODO: Error
+				CharBuffer = 0;
+			}
 		}
 	}
 	else
 	{
-		CharBuffer[0] = Buffer[0];
+		if (CharBuffer[Index])
+		{
+			CharBuffer[0] = Buffer[0];
+		}
+		else
+		{
+			// TODO: Error
+			CharBuffer =  0;
+		}
 	}
 }
 

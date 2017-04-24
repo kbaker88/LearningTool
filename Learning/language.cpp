@@ -3,11 +3,13 @@
 LRESULT CALLBACK DictionaryProc(HWND DictWindow, UINT Message,
 	WPARAM wParam, LPARAM lParam);
 
-void LanguageState::Initialize(HWND Window)
+void LanguageState::Initialize(HWND window, State* SaveState)
 {
+	Save = SaveState;
+
 	if (TotalWordCount)
 	{
-		Window = Window;
+		Window = window;
 		DeviceContext = GetWindowDC(Window);
 		Instance = (HINSTANCE)GetWindowLong(Window, GWL_HINSTANCE);
 
@@ -53,13 +55,24 @@ void LanguageState::Initialize(HWND Window)
 					GWL_HINSTANCE), NULL);
 		}
 
-		if (TotalWordCount > 0)
+		if (Save->Set)
 		{
-			CurrentWordChoice =
-				(unsigned int)(rand() % TotalWordCount);
+			CurrentWordChoice = Save->Words[0];
+			SendMessageW(EditWindowOutput, WM_SETTEXT, 0,
+				(LPARAM)Words[CurrentWordChoice].Russian);
 		}
-		SendMessageW(EditWindowOutput, WM_SETTEXT, 0,
-			(LPARAM)Words[CurrentWordChoice].Russian);
+		else
+		{
+			if (TotalWordCount > 0)
+			{
+				CurrentWordChoice =
+					(unsigned int)(rand() % TotalWordCount);
+				Save->Set = true;
+				Save->Words[0] = CurrentWordChoice;
+			}
+			SendMessageW(EditWindowOutput, WM_SETTEXT, 0,
+				(LPARAM)Words[CurrentWordChoice].Russian);
+		}
 
 		SetFocus(EditWindowInput);
 	}
@@ -202,6 +215,7 @@ void LanguageState::CheckClickStates(unsigned short Command)
 			{
 				CurrentWordChoice = 
 					(unsigned int)(rand() % TotalWordCount);
+				Save->Words[0] = CurrentWordChoice;
 			}
 			SendMessageW(EditWindowOutput, WM_SETTEXT, 0, 
 				(LPARAM)Words[CurrentWordChoice].Russian);
@@ -261,12 +275,17 @@ void LanguageState::DisplayDictionary()
 			}
 		}
 
-		Dictionary = CreateWindowEx(
+		RECT WindowRect = {};
+		GetClientRect(Window, &WindowRect);
+		MapWindowPoints(Window, GetParent(Window), (LPPOINT)&WindowRect, 2);
+
+
+		Dictionary = CreateWindowExW(
 			WS_EX_CLIENTEDGE,
-			(const char*)"Dictionary",
-			"Dictionary",
+			L"Dictionary",
+			L"Dictionary",
 			WS_BORDER | WS_VISIBLE,
-			CW_USEDEFAULT, CW_USEDEFAULT, 300, 300,
+			WindowRect.right - 8, WindowRect.top - 33, 300, 300,
 			Window, NULL, Instance, NULL);
 
 		if (Dictionary)
@@ -278,14 +297,41 @@ void LanguageState::DisplayDictionary()
 			{
 				DictionaryList = CreateWindowExW(
 					0, L"LISTBOX", NULL,
-					WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_DLGFRAME |
-					ES_LEFT | ES_MULTILINE | ES_AUTOVSCROLL,
+					WS_CHILD | WS_VISIBLE | WS_DLGFRAME |
+					ES_LEFT | ES_AUTOVSCROLL | WS_VSCROLL,
 					10, 10, 260, 245, Dictionary, (HMENU)210,
 					Instance, NULL);
 
+				HFONT hFont = CreateFont(13, 0, 0, 0, FW_DONTCARE, FALSE,
+					FALSE, FALSE, ANSI_CHARSET, OUT_TT_PRECIS, CLIP_DEFAULT_PRECIS,
+					DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, TEXT("Tahoma"));
+
+				SendMessage(DictionaryList, WM_SETFONT, (WPARAM)hFont, TRUE);
+					
 				// LB_INITSTORAGE Initializing storage later to speed it up
-				SendMessage(DictionaryList, LB_ADDSTRING, 0,
-					(LPARAM)"Testing");//Words[0].English);
+				for (unsigned int Word = 0; Word < TotalWordCount; Word++)
+				{
+					unsigned short Buffer[64] = {};
+					unsigned int Index = 0;
+					for (unsigned int i = 0; i < Words[Word].EnglishLength; i++)
+					{
+						Buffer[i] = Words[Word].English[i];
+						Index++;
+					}
+					Buffer[Index] = 32;
+					Index++;
+					Buffer[Index] = 124;
+					Index++;
+					Buffer[Index] = 32;
+					Index++;
+					for (unsigned int i = 0; i < Words[Word].RussianLength; i++)
+					{
+						Buffer[i + Index] = Words[Word].Russian[i];
+					}
+
+					SendMessageW(DictionaryList, LB_INSERTSTRING, 0,
+						(LPARAM)Buffer);
+				}
 			}
 		}
 		else

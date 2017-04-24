@@ -114,10 +114,12 @@
     <ClCompile Include="language.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="math.cpp" />
+    <ClCompile Include="state_system.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Language.h" />
     <ClInclude Include="math.h" />
+    <ClInclude Include="state_system.h" />
     <ClInclude Include="utility.h" />
   </ItemGroup>
   <ItemGroup>

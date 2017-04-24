@@ -1,8 +1,9 @@
 #include "math.h"
 
-void MathState::Initialize(HWND Window)
+void MathState::Initialize(HWND window, State *SaveState)
 {
-	Window = Window;
+	Save = SaveState;
+	Window = window;
 	DeviceContext = GetWindowDC(Window);
 	if (!EditA)
 	{
@@ -47,402 +48,198 @@ void MathState::Initialize(HWND Window)
 				GWL_HINSTANCE), NULL);
 	}
 
-	Display(0);
+	if (Save->Set)
+	{
+		A = Save->Numbers[0];
+		B = Save->Numbers[1];
+		ProblemState = Save->Numbers[2];
+		Display(3);
+	}
+	else
+	{
+		Display(0);
+		Save->Set = true;
+		Save->Numbers[0] = A;
+		Save->Numbers[1] = B;
+		Save->Numbers[2] = ProblemState;
+	}
 }
 
 void MathState::Loop()
 {
 }
 
-void MathState::AdditionDisplay()
-{
-	std::string CorrectNumber = std::to_string(CorrectCount);
-	std::string InCorrectNumber = std::to_string(WrongCount);
-	char* CorrectScore = "Correct: ";
-	char* WrongScore = "Incorrect: ";
-
-	if (DeviceContext)
-	{
-		TextOut(DeviceContext, 140, 190, "+  ", 3);
-		TextOut(DeviceContext, 220, 190, "=", 1);
-
-		TextOut(DeviceContext, 29, 243, CorrectScore, 9);
-		TextOut(DeviceContext, 29, 263, WrongScore, 11);
-		TextOut(DeviceContext, 94, 243, CorrectNumber.c_str(),
-			CorrectNumber.length());
-		TextOut(DeviceContext, 94, 263, InCorrectNumber.c_str(),
-			InCorrectNumber.length());
-	}
-	else
-	{
-		MessageBox(0, "Device Context Not Found", 0, 0);
-	}
-
-	unsigned int NewA = (rand() % 101);
-	unsigned int NewB = (rand() % 101);
-
-	unsigned short BufferA[16] = {};
-	unsigned short BufferB[16] = {};
-	Utility_IntToChar(NewA, BufferA);
-	Utility_IntToChar(NewB, BufferB);
-	SendMessageW(EditA,
-		WM_SETTEXT, 0, (LPARAM)BufferA);
-	SendMessageW(EditB,
-		WM_SETTEXT, 0, (LPARAM)BufferB);
-
-	SendMessageW(EditC, WM_SETTEXT, 0,
-		(LPARAM)"");
-}
-
-void MathState::AdditionTest()
-{
-	const unsigned int BufferSize = 16;
-	char BufferA[BufferSize] = {};
-	char BufferB[BufferSize] = {};
-	char BufferC[BufferSize] = {};
-	GetWindowText(EditA, BufferA, BufferSize);
-	int A = atoi(BufferA);
-	GetWindowText(EditB, BufferB, BufferSize);
-	int B = atoi(BufferB);
-	GetWindowText(EditC, BufferC, BufferSize);
-	int UserC = atoi(BufferC);
-
-	int C = A + B;
-
-	if (C == UserC)
-	{
-		CorrectCount++;
-		Display(1);
-	}
-	else
-	{
-		WrongCount++;
-		Display(2);
-	}
-}
-
-void MathState::SubtractionDisplay()
-{
-	std::string CorrectNumber = std::to_string(CorrectCount);
-	std::string InCorrectNumber = std::to_string(WrongCount);
-	char* CorrectScore = "Correct: ";
-	char* WrongScore = "Incorrect: ";
-
-	if (DeviceContext)
-	{
-		TextOut(DeviceContext, 140, 190, " - ", 3);
-		TextOut(DeviceContext, 220, 190, "=", 1);
-
-		TextOut(DeviceContext, 29, 243, CorrectScore, 9);
-		TextOut(DeviceContext, 29, 263, WrongScore, 11);
-		TextOut(DeviceContext, 94, 243, CorrectNumber.c_str(),
-			CorrectNumber.length());
-		TextOut(DeviceContext, 94, 263, InCorrectNumber.c_str(),
-			InCorrectNumber.length());
-	}
-	else
-	{
-		MessageBox(0, "Device Context Not Found", 0, 0);
-	}
-
-	unsigned int NewA = (rand() % 101);
-	unsigned int NewB = (rand() % 101);
-
-	unsigned short BufferA[16] = {};
-	unsigned short BufferB[16] = {};
-	Utility_IntToChar(NewA, BufferA);
-	Utility_IntToChar(NewB, BufferB);
-	SendMessageW(EditA,
-		WM_SETTEXT, 0, (LPARAM)BufferA);
-	SendMessageW(EditB,
-		WM_SETTEXT, 0, (LPARAM)BufferB);
-
-	SendMessageW(EditC, WM_SETTEXT, 0,
-		(LPARAM)"");
-}
-
-void MathState::SubtractionTest()
-{
-	const unsigned int BufferSize = 16;
-	char BufferA[BufferSize] = {};
-	char BufferB[BufferSize] = {};
-	char BufferC[BufferSize] = {};
-	GetWindowText(EditA, BufferA, BufferSize);
-	int A = atoi(BufferA);
-	GetWindowText(EditB, BufferB, BufferSize);
-	int B = atoi(BufferB);
-	GetWindowText(EditC, BufferC, BufferSize);
-	int UserC = atoi(BufferC);
-
-	int C = A - B;
-
-	if (C == UserC)
-	{
-		CorrectCount++;
-		Display(1);
-	}
-	else
-	{
-		WrongCount++;
-		Display(2);
-	}
-}
-
-void MathState::MultiplicationDisplay()
-{
-	std::string CorrectNumber = std::to_string(CorrectCount);
-	std::string InCorrectNumber = std::to_string(WrongCount);
-	char* CorrectScore = "Correct: ";
-	char* WrongScore = "Incorrect: ";
-
-	if (DeviceContext)
-	{
-		TextOut(DeviceContext, 140, 190, "x  ", 3);
-		TextOut(DeviceContext, 220, 190, "=", 1);
-
-		TextOut(DeviceContext, 29, 243, CorrectScore, 9);
-		TextOut(DeviceContext, 29, 263, WrongScore, 11);
-		TextOut(DeviceContext, 94, 243, CorrectNumber.c_str(),
-			CorrectNumber.length());
-		TextOut(DeviceContext, 94, 263, InCorrectNumber.c_str(),
-			InCorrectNumber.length());
-	}
-	else
-	{
-		MessageBox(0, "Device Context Not Found", 0, 0);
-	}
-
-	unsigned int NewA = (rand() % 13);
-	unsigned int NewB = (rand() % 13);
-
-	unsigned short BufferA[16] = {};
-	unsigned short BufferB[16] = {};
-	Utility_IntToChar(NewA, BufferA);
-	Utility_IntToChar(NewB, BufferB);
-	SendMessageW(EditA,
-		WM_SETTEXT, 0, (LPARAM)BufferA);
-	SendMessageW(EditB,
-		WM_SETTEXT, 0, (LPARAM)BufferB);
-
-	SendMessageW(EditC, WM_SETTEXT, 0,
-		(LPARAM)"");
-}
-
-void MathState::MultiplicationTest()
-{
-	const unsigned int BufferSize = 16;
-	char BufferA[BufferSize] = {};
-	char BufferB[BufferSize] = {};
-	char BufferC[BufferSize] = {};
-	GetWindowText(EditA, BufferA, BufferSize);
-	int A = atoi(BufferA);
-	GetWindowText(EditB, BufferB, BufferSize);
-	int B = atoi(BufferB);
-	GetWindowText(EditC, BufferC, BufferSize);
-	int UserC = atoi(BufferC);
-
-	int C = A * B;
-
-	if (C == UserC)
-	{
-		CorrectCount++;
-		Display(1);
-	}
-	else
-	{
-		WrongCount++;
-		Display(2);
-	}
-}
-
-void MathState::DivisonDisplay()
-{
-	std::string CorrectNumber = std::to_string(CorrectCount);
-	std::string InCorrectNumber = std::to_string(WrongCount);
-	char* CorrectScore = "Correct: ";
-	char* WrongScore = "Incorrect: ";
-
-	if (DeviceContext)
-	{
-		TextOut(DeviceContext, 140, 190, "%", 1);
-		TextOut(DeviceContext, 220, 190, "=", 1);
-
-		TextOut(DeviceContext, 29, 243, CorrectScore, 9);
-		TextOut(DeviceContext, 29, 263, WrongScore, 11);
-		TextOut(DeviceContext, 94, 243, CorrectNumber.c_str(),
-			CorrectNumber.length());
-		TextOut(DeviceContext, 94, 263, InCorrectNumber.c_str(),
-			InCorrectNumber.length());
-	}
-	else
-	{
-		MessageBox(0, "Device Context Not Found", 0, 0);
-	}
-
-	unsigned int NewB = (rand() % 13);
-	if (NewB == 0)
-	{
-		NewB = 1;
-	}
-
-	unsigned int NewA = NewB * ((unsigned int)rand() % 13);
-
-	unsigned short BufferA[16] = {};
-	unsigned short BufferB[16] = {};
-	Utility_IntToChar(NewA, BufferA);
-	Utility_IntToChar(NewB, BufferB);
-	SendMessageW(EditA,
-		WM_SETTEXT, 0, (LPARAM)BufferA);
-	SendMessageW(EditB,
-		WM_SETTEXT, 0, (LPARAM)BufferB);
-
-	SendMessageW(EditC, WM_SETTEXT, 0,
-		(LPARAM)"");
-}
-
-void MathState::DivisionTest()
-{
-	const unsigned int BufferSize = 16;
-	char BufferA[BufferSize] = {};
-	char BufferB[BufferSize] = {};
-	char BufferC[BufferSize] = {};
-	GetWindowText(EditA, BufferA, BufferSize);
-	int A = atoi(BufferA);
-	GetWindowText(EditB, BufferB, BufferSize);
-	int B = atoi(BufferB);
-	GetWindowText(EditC, BufferC, BufferSize);
-	int UserC = atoi(BufferC);
-
-	int C;
-	if (B == 0)
-	{
-		C = 1; //TODO: Error
-	}
-	else
-	{
-		C = A / B;
-	}
-
-	if (C == UserC)
-	{
-		CorrectCount++;
-		Display(1);
-	}
-	else
-	{
-		WrongCount++;
-		Display(2);
-	}
-}
-
 void MathState::Display(unsigned int SolutionState)
 {
-	if (SolutionState != 2)
+	if ((SolutionState != 2) && (SolutionState != 3))
 	{
 		ProblemState = ((unsigned int)rand() % 4);
 	}
+	//////////////////////////////////////////////////////////////////
+	std::string CorrectNumber = std::to_string(CorrectCount);
+	std::string InCorrectNumber = std::to_string(WrongCount);
+	char* CorrectScore = "Correct: ";
+	char* WrongScore = "Incorrect: ";
 
-	switch (ProblemState)
-	{
-	case 0:
-	{
-		if (SolutionState == 2)
-		{
-			SendMessageW(EditC, WM_SETTEXT, 0,
-				(LPARAM)"");
-		
-			std::string InCorrectNumber = std::to_string(WrongCount);
-			TextOut(DeviceContext, 94, 263, InCorrectNumber.c_str(),
-				InCorrectNumber.length());
-		}
-		else
-		{
-			AdditionDisplay();
-		}
-	} break;
-	case 1:
-	{
-		if (SolutionState == 2)
-		{
-			SendMessageW(EditC, WM_SETTEXT, 0,
-				(LPARAM)"");
-
-			std::string InCorrectNumber = std::to_string(WrongCount);
-			TextOut(DeviceContext, 94, 263, InCorrectNumber.c_str(),
-				InCorrectNumber.length());
-		}
-		else
-		{
-			SubtractionDisplay();
-		}
-	} break;
-	case 2:
-	{
-		if (SolutionState == 2)
-		{
-			SendMessageW(EditC, WM_SETTEXT, 0,
-				(LPARAM)"");
-		
-			std::string InCorrectNumber = std::to_string(WrongCount);
-			TextOut(DeviceContext, 94, 263, InCorrectNumber.c_str(),
-				InCorrectNumber.length());
-		}
-		else
-		{
-			MultiplicationDisplay();
-		}
-	} break;
-	case 3:
-	{
-		if (SolutionState == 2)
-		{
-			SendMessageW(EditC, WM_SETTEXT, 0,
-				(LPARAM)"");
-		
-			std::string InCorrectNumber = std::to_string(WrongCount);
-			TextOut(DeviceContext, 94, 263, InCorrectNumber.c_str(),
-				InCorrectNumber.length());
-		}
-		else
-		{
-			DivisonDisplay();
-		}
-	} break;
-	default: break;
-	}
-	SetFocus(EditC);
-}
-
-void MathState::CheckAnswer(unsigned short Command)
-{
-	if (Command == 103)
+	if (DeviceContext)
 	{
 		switch (ProblemState)
 		{
 		case 0:
 		{
-			AdditionTest();
+			if ((SolutionState != 2) && (SolutionState != 3))
+			{
+				A = (rand() % 101);
+				B = (rand() % 101);
+			}
+			TextOut(DeviceContext, 140, 190, "+  ", 3);
+			TextOut(DeviceContext, 220, 190, "=", 1);
 		} break;
 		case 1:
 		{
-			SubtractionTest();
+			if ((SolutionState != 2) && (SolutionState != 3))
+			{
+				A = (rand() % 101);
+				B = (rand() % 101);
+			}
+			TextOut(DeviceContext, 140, 190, " - ", 3);
+			TextOut(DeviceContext, 220, 190, "=", 1);
 		} break;
 		case 2:
 		{
-			MultiplicationTest();
+			if ((SolutionState != 2) && (SolutionState != 3))
+			{
+				A = (rand() % 13);
+				B = (rand() % 13);
+			}
+			TextOut(DeviceContext, 140, 190, "x  ", 3);
+			TextOut(DeviceContext, 220, 190, "=", 1);
 		} break;
 		case 3:
 		{
-			DivisionTest();
+			if ((SolutionState != 2) && (SolutionState != 3))
+			{
+				B = (rand() % 13);
+				if (B == 0)
+				{
+					B = 1;
+				}
+
+				A = B * ((unsigned int)rand() % 13);
+			}
+			TextOut(DeviceContext, 140, 190, "%", 1);
+			TextOut(DeviceContext, 220, 190, "=", 1);
 		} break;
 		default: break;
 		}
 
+		std::string CorrectNumber = std::to_string(CorrectCount);
+		std::string InCorrectNumber = std::to_string(WrongCount);
+		char* CorrectScore = "Correct: ";
+		char* WrongScore = "Incorrect: ";
+		TextOut(DeviceContext, 29, 243, CorrectScore, 9);
+		TextOut(DeviceContext, 29, 263, WrongScore, 11);
+		TextOut(DeviceContext, 94, 243, CorrectNumber.c_str(),
+			CorrectNumber.length());
+		TextOut(DeviceContext, 94, 263, InCorrectNumber.c_str(),
+			InCorrectNumber.length());
+	}
+	else
+	{
+		MessageBox(0, "Device Context Not Found", 0, 0);
+	}
+
+
+	unsigned short BufferA[16] = {};
+	unsigned short BufferB[16] = {};
+	Utility_IntToChar(A, BufferA);
+	Utility_IntToChar(B, BufferB);
+	SendMessageW(EditA,
+		WM_SETTEXT, 0, (LPARAM)BufferA);
+	SendMessageW(EditB,
+		WM_SETTEXT, 0, (LPARAM)BufferB);
+
+	SendMessageW(EditC, WM_SETTEXT, 0,
+		(LPARAM)"");
+
+	SetFocus(EditC);
+}
+
+void MathState::Commands(unsigned short Command)
+{
+	if (Command == 103)
+	{
+		CheckAnswer();
+	}
+}
+
+void MathState::CheckAnswer()
+{
+	const unsigned int BufferSize = 16;
+	char BufferA[BufferSize] = {};
+	char BufferB[BufferSize] = {};
+	char BufferC[BufferSize] = {};
+	GetWindowText(EditA, BufferA, BufferSize);
+	A = atoi(BufferA);
+	GetWindowText(EditB, BufferB, BufferSize);
+	B = atoi(BufferB);
+	GetWindowText(EditC, BufferC, BufferSize);
+	int UserC = atoi(BufferC);
+	int C = 0;
+
+	switch (ProblemState)
+	{
+	case 0:
+	{
+		C = A + B;
+	} break;
+	case 1:
+	{
+		C = A - B;
+	} break;
+	case 2:
+	{
+		C = A * B;
+	} break;
+	case 3:
+	{
+		if (B == 0)
+		{
+			C = 1; //TODO: Error
+		}
+		else
+		{
+			C = A / B;
+		}
+	} break;
+	default: break;
+	}
+
+	if (C == UserC)
+	{
+		CorrectCount++;
+		Display(1);
+		Save->Numbers[0] = A;
+		Save->Numbers[1] = B;
+		Save->Numbers[2] = ProblemState;
+	}
+	else
+	{
+		WrongCount++;
+		Display(2);
 	}
 }
 
 void MathState::CleanUp()
 {
+	if (Save)
+	{
+		Save->Set = true;
+		Save->Numbers[0] = A;
+		Save->Numbers[1] = B;
+		Save->Numbers[2] = ProblemState;
+	}
+
 	if (CheckButton)
 	{
 		DestroyWindow(CheckButton);

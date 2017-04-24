@@ -8,7 +8,9 @@
 #include <stdlib.h>     /* srand, rand */
 #include <time.h>       /* time */
 
-//TODO: Put in Buffer length checks for robustness
+#include "state_system.h"
+
+//TODO: Put in CharBuffer length checks for robustness
 static void Utility_IntToChar(int Number, unsigned short* CharBuffer)
 {
 	unsigned short Buffer[16] = {};
@@ -36,7 +38,7 @@ static void Utility_IntToChar(int Number, unsigned short* CharBuffer)
 	{
 		for (int i = Length - 1; i >= 0; i--)
 		{
-			if (CharBuffer[Index])
+			if (Buffer[Index])
 			{
 				CharBuffer[Index] = Buffer[i];
 				Index++;
@@ -50,7 +52,7 @@ static void Utility_IntToChar(int Number, unsigned short* CharBuffer)
 	}
 	else
 	{
-		if (CharBuffer[Index])
+		if (Buffer[Index])
 		{
 			CharBuffer[0] = Buffer[0];
 		}

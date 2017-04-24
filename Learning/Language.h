@@ -21,11 +21,11 @@ public:
 	LanguageState() : Window(0), EditWindowOutput(0), EditWindowInput(0),
 		CheckButton(0), CorrectCount(0), WrongCount(0), TotalWordCount(0),
 		CurrentWordChoice(0), DeviceContext(0), DictionaryButton(0),
-		Dictionary(0), DictionaryList(0), Instance(0) {}
+		Dictionary(0), DictionaryList(0), Instance(0), Save(0) {}
 
 	~LanguageState() {}
 
-	void Initialize(HWND Window);
+	void Initialize(HWND window, State* SaveState);
 	bool LoadDatabase(char* FileName);
 	void Loop();
 	void Display();
@@ -41,6 +41,7 @@ private:
 		CheckButton, DictionaryButton, Dictionary, DictionaryList;
 	HDC DeviceContext;
 	HINSTANCE Instance;
+	State* Save;
 	unsigned int CorrectCount, WrongCount, TotalWordCount,
 		CurrentWordChoice;
 };

@@ -24,6 +24,9 @@
     <ClCompile Include="math.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="state_system.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Language.h">
@@ -33,6 +36,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="utility.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="state_system.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

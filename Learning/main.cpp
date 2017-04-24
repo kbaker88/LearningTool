@@ -5,6 +5,7 @@ LRESULT CALLBACK WndProc(HWND Window, UINT Message,
 
 LanguageState RussianToEnglish;
 MathState Math;
+static State SaveState;
 
 int WINAPI WinMain(HINSTANCE Instance, HINSTANCE PrevInstance,
 	LPSTR CommandLine, int CommandShow)
@@ -66,7 +67,7 @@ int WINAPI WinMain(HINSTANCE Instance, HINSTANCE PrevInstance,
 		return 1;
 	}
 
-	RussianToEnglish.Initialize(Window);
+	RussianToEnglish.Initialize(Window, &SaveState);
 
 	UpdateWindow(Window);
 	ShowWindow(Window, CommandShow);
@@ -103,19 +104,19 @@ LRESULT CALLBACK WndProc(HWND Window, UINT Message,
 		case 100:
 		{
 			Math.CleanUp();
-			RussianToEnglish.Initialize(Window);
+			RussianToEnglish.Initialize(Window, &SaveState);
 		} break;
 		case 101:
 		{
 			RussianToEnglish.CleanUp();
-			Math.Initialize(Window);
+			Math.Initialize(Window, &SaveState);
 		} break;
 		default: break;
 		}
 
 		unsigned short Command = LOWORD(wParam);
 		RussianToEnglish.CheckClickStates(wParam);
-		Math.CheckAnswer(wParam);
+		Math.Commands(wParam);
 		
 	} break;
 	case WM_DESTROY:

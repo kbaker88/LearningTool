@@ -4,12 +4,12 @@
 class State
 {
 public:
-	State() : Set(false) {}
+	State() : MathSet(false), EnglishSet(false) {}
 	~State() {}
 
 	int Words[2] = {};
 	int Numbers[3] = {};
-	bool Set;
+	bool MathSet, EnglishSet;
 
 private:
 };

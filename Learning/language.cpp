@@ -55,7 +55,7 @@ void LanguageState::Initialize(HWND window, State* SaveState)
 					GWL_HINSTANCE), NULL);
 		}
 
-		if (Save->Set)
+		if (Save->EnglishSet)
 		{
 			CurrentWordChoice = Save->Words[0];
 			SendMessageW(EditWindowOutput, WM_SETTEXT, 0,
@@ -67,7 +67,7 @@ void LanguageState::Initialize(HWND window, State* SaveState)
 			{
 				CurrentWordChoice =
 					(unsigned int)(rand() % TotalWordCount);
-				Save->Set = true;
+				Save->EnglishSet = true;
 				Save->Words[0] = CurrentWordChoice;
 			}
 			SendMessageW(EditWindowOutput, WM_SETTEXT, 0,
@@ -128,7 +128,7 @@ bool LanguageState::LoadDatabase(char* FileName)
 						}
 					}
 				}
-				else if (line[i + 1] == 0x2A)
+				else if (line[i + 1] == 0x2A) // * to skip the wide char line symbols
 				{
 					StartRead = true;
 				}
@@ -303,8 +303,9 @@ void LanguageState::DisplayDictionary()
 					Instance, NULL);
 
 				HFONT hFont = CreateFont(13, 0, 0, 0, FW_DONTCARE, FALSE,
-					FALSE, FALSE, ANSI_CHARSET, OUT_TT_PRECIS, CLIP_DEFAULT_PRECIS,
-					DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, TEXT("Tahoma"));
+					FALSE, FALSE, ANSI_CHARSET, OUT_TT_PRECIS, 
+					CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | 
+					FF_DONTCARE, TEXT("Tahoma"));
 
 				SendMessage(DictionaryList, WM_SETFONT, (WPARAM)hFont, TRUE);
 					

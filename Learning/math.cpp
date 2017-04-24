@@ -48,7 +48,7 @@ void MathState::Initialize(HWND window, State *SaveState)
 				GWL_HINSTANCE), NULL);
 	}
 
-	if (Save->Set)
+	if (Save->MathSet)
 	{
 		A = Save->Numbers[0];
 		B = Save->Numbers[1];
@@ -58,7 +58,7 @@ void MathState::Initialize(HWND window, State *SaveState)
 	else
 	{
 		Display(0);
-		Save->Set = true;
+		Save->MathSet = true;
 		Save->Numbers[0] = A;
 		Save->Numbers[1] = B;
 		Save->Numbers[2] = ProblemState;
@@ -234,7 +234,7 @@ void MathState::CleanUp()
 {
 	if (Save)
 	{
-		Save->Set = true;
+		Save->MathSet = true;
 		Save->Numbers[0] = A;
 		Save->Numbers[1] = B;
 		Save->Numbers[2] = ProblemState;

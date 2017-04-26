@@ -1,3 +1,7 @@
-﻿  language.cpp
+﻿  state_system.cpp
+  math.cpp
+  main.cpp
+  language.cpp
+  Generating Code...
   Learning.vcxproj -> C:\Users\Kevin\Documents\GitHub\LearningTool\Debug\Learning.exe
   Learning.vcxproj -> C:\Users\Kevin\Documents\GitHub\LearningTool\Debug\Learning.pdb (Partial PDB)

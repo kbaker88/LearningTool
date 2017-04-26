@@ -10,7 +10,7 @@ void MathState::Initialize(HWND window, State *SaveState)
 		EditA = CreateWindowExW(
 			0, L"EDIT", NULL,
 			WS_CHILD | WS_VISIBLE | WS_DLGFRAME |
-			ES_LEFT,
+			ES_LEFT | ES_READONLY,
 			70, 150, 50, 30, Window, (HMENU)112,
 			(HINSTANCE)GetWindowLong(Window,
 				GWL_HINSTANCE), NULL);
@@ -21,7 +21,7 @@ void MathState::Initialize(HWND window, State *SaveState)
 		EditB = CreateWindowExW(
 			0, L"EDIT", NULL,
 			WS_CHILD | WS_VISIBLE | WS_DLGFRAME |
-			ES_LEFT,
+			ES_LEFT | ES_READONLY,
 			150, 150, 50, 30, Window, (HMENU)113,
 			(HINSTANCE)GetWindowLong(Window,
 				GWL_HINSTANCE), NULL);

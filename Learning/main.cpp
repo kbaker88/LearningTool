@@ -119,6 +119,17 @@ LRESULT CALLBACK WndProc(HWND Window, UINT Message,
 		Math.Commands(wParam);
 		
 	} break;
+	case WM_KEYDOWN:
+	{
+		switch (wParam)
+		{
+		case VK_RIGHT:
+		{
+ 			RussianToEnglish.CheckClickStates(wParam);
+			Math.Commands(wParam);
+		} break;
+		}
+	} break;
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;

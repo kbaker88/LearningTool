@@ -38,7 +38,7 @@ void LanguageState::Initialize(HWND window, State* SaveState)
 			EditWindowInput = CreateWindowExW(
 				0, L"EDIT", NULL,
 				WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_DLGFRAME |
-				ES_LEFT | ES_MULTILINE | ES_AUTOVSCROLL,
+				ES_LEFT | ES_AUTOVSCROLL,
 				20, 150, 250, 50, Window, (HMENU)110,
 				(HINSTANCE)GetWindowLong(Window,
 					GWL_HINSTANCE), NULL);
@@ -49,7 +49,7 @@ void LanguageState::Initialize(HWND window, State* SaveState)
 			EditWindowOutput = CreateWindowExW(
 				0, L"EDIT", NULL,
 				WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_DLGFRAME |
-				ES_LEFT | ES_MULTILINE | ES_AUTOVSCROLL,
+				ES_LEFT | ES_MULTILINE | ES_AUTOVSCROLL| ES_READONLY,
 				310, 150, 250, 50, Window, (HMENU)111,
 				(HINSTANCE)GetWindowLong(Window,
 					GWL_HINSTANCE), NULL);
@@ -75,6 +75,123 @@ void LanguageState::Initialize(HWND window, State* SaveState)
 		}
 
 		SetFocus(EditWindowInput);
+
+		/////////// Testing Code/////////////////////
+//
+//		WNDCLASSEX TestWindowClassStruct;
+//
+//		if (!GetClassInfoEx(Instance, "TestWindow", &TestWindowClassStruct))
+//		{
+//			TestWindowClassStruct.cbSize = sizeof(WNDCLASSEX);
+//			TestWindowClassStruct.style = CS_OWNDC;
+//			TestWindowClassStruct.lpfnWndProc = DictionaryProc;
+//			TestWindowClassStruct.cbClsExtra = 0;
+//			TestWindowClassStruct.cbWndExtra = 0;
+//			TestWindowClassStruct.hInstance = Instance;
+//			TestWindowClassStruct.hIcon = 0;
+//			TestWindowClassStruct.hCursor = LoadCursor(NULL, IDC_ARROW);
+//			TestWindowClassStruct.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+//			TestWindowClassStruct.lpszMenuName = NULL;
+//			TestWindowClassStruct.lpszClassName = "TestWindow";
+//			TestWindowClassStruct.hIconSm = 0;
+//
+//			if (!RegisterClassEx(&TestWindowClassStruct))
+//			{
+//				MessageBox(NULL, "TestWindow Window Registration Failed!",
+//					"Error!", MB_ICONEXCLAMATION | MB_OK);
+//			}
+//		}
+//
+//		RECT WindowRect = {};
+//		GetClientRect(Window, &WindowRect);
+//		MapWindowPoints(Window, GetParent(Window), (LPPOINT)&WindowRect, 2);
+//
+//		HWND TestWindow = CreateWindowExW(
+//			WS_EX_CLIENTEDGE,
+//			L"TestWindow",
+//			L"TestWindow",
+//			WS_BORDER | WS_VISIBLE,
+//			0, 0, 300, 300,
+//			Window, NULL, Instance, NULL);
+//
+//		if (TestWindow)
+//		{
+//			UpdateWindow(TestWindow);
+//			ShowWindow(TestWindow, SW_SHOW);
+//		}
+//		else
+//		{
+//			MessageBox(NULL, "TestWindow Window Did Not Create.",
+//				"Error!", MB_ICONEXCLAMATION | MB_OK);
+//		}
+//
+//		HDC DeviceContext = CreateCompatibleDC(GetDC(TestWindow));
+//		void* Bits = 0;
+//		int BitmapWidth = 1024;
+//		int BitmapHeight = 1024;
+//
+//		BITMAPINFO BitmapInfo = {};
+//		BitmapInfo.bmiHeader.biSize = sizeof(BitmapInfo.bmiHeader);
+//		BitmapInfo.bmiHeader.biWidth = BitmapWidth;
+//		BitmapInfo.bmiHeader.biHeight = BitmapHeight;
+//		BitmapInfo.bmiHeader.biPlanes = 1;
+//		BitmapInfo.bmiHeader.biBitCount = 32;
+//		BitmapInfo.bmiHeader.biCompression = BI_RGB;
+//
+//		HBITMAP Bitmap = CreateDIBSection(DeviceContext,
+//				&BitmapInfo, DIB_RGB_COLORS, &Bits, 0, 0);
+//
+//		SelectObject(DeviceContext, Bitmap);
+//
+//		memset(Bits, 0xFF, BitmapWidth * BitmapHeight * sizeof(unsigned int));
+//
+//		SetBkColor(DeviceContext, RGB(0, 0, 0));
+//
+//		AddFontResourceExA("c:/Windows/Fonts/arial.ttf", FR_PRIVATE, 0);
+//		
+//		HFONT Font = CreateFontA(128, 0, 0, 0, FW_NORMAL,
+//			0, 0, 0, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS,
+//			CLIP_DEFAULT_PRECIS, ANTIALIASED_QUALITY,
+//			DEFAULT_PITCH | FF_DONTCARE, "arial");
+//		
+//		SelectObject((HDC)DeviceContext, Font);
+//		
+//		SIZE Size;
+//		if (!GetTextExtentPoint32W((HDC)DeviceContext, L"T",
+//			1, &Size))
+//		{
+//			// TODO: Error
+//		}
+//		
+//		int Width = Size.cx;
+//		if (Width > BitmapWidth)
+//		{
+//			Width = BitmapWidth;
+//		}
+//		int Height = Size.cy;
+//		if (Height > BitmapHeight)
+//		{
+//			Height = BitmapHeight;
+//		}
+//		
+//		if (SetTextColor((HDC)DeviceContext, RGB(255, 255, 255)) ==
+//			CLR_INVALID)
+//		{
+//			// TODO: Error
+//		}
+//		
+//		if (!TextOutW((HDC)DeviceContext, 0, 0, L"T", 1))
+//		{
+//			// TODO: Error
+//		}
+//	
+//		BitBlt(GetDC(TestWindow), 0, 0, 250, 250,
+//			DeviceContext, 0, 0, SRCCOPY);
+//
+//		DeleteObject(Bitmap);
+//		DeleteObject(Font);
+//		ReleaseDC(TestWindow, DeviceContext);
+		/////////////////END TEST///////////////////////////////////
 	}
 	else
 	{

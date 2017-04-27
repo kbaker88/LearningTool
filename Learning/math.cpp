@@ -15,7 +15,6 @@ void MathState::Initialize(HWND window, State *SaveState)
 			(HINSTANCE)GetWindowLong(Window,
 				GWL_HINSTANCE), NULL);
 	}
-
 	if (!EditB)
 	{
 		EditB = CreateWindowExW(
@@ -26,7 +25,6 @@ void MathState::Initialize(HWND window, State *SaveState)
 			(HINSTANCE)GetWindowLong(Window,
 				GWL_HINSTANCE), NULL);
 	}
-
 	if (!EditC)
 	{
 		EditC = CreateWindowExW(
@@ -37,7 +35,6 @@ void MathState::Initialize(HWND window, State *SaveState)
 			(HINSTANCE)GetWindowLong(Window, 
 				GWL_HINSTANCE), NULL);
 	}
-
 	if (!CheckButton)
 	{
 		CheckButton = CreateWindow("BUTTON",
@@ -47,7 +44,6 @@ void MathState::Initialize(HWND window, State *SaveState)
 			(HINSTANCE)GetWindowLong(Window,
 				GWL_HINSTANCE), NULL);
 	}
-
 	if (Save->MathSet)
 	{
 		A = Save->Numbers[0];
@@ -65,9 +61,7 @@ void MathState::Initialize(HWND window, State *SaveState)
 	}
 }
 
-void MathState::Loop()
-{
-}
+void MathState::Loop() {}
 
 void MathState::Display(unsigned int SolutionState)
 {
@@ -87,48 +81,19 @@ void MathState::Display(unsigned int SolutionState)
 		{
 		case 0:
 		{
-			if ((SolutionState != 2) && (SolutionState != 3))
-			{
-				A = (rand() % 101);
-				B = (rand() % 101);
-			}
-			TextOut(DeviceContext, 140, 190, "+  ", 3);
-			TextOut(DeviceContext, 220, 190, "=", 1);
+			Display_Addition();
 		} break;
 		case 1:
 		{
-			if ((SolutionState != 2) && (SolutionState != 3))
-			{
-				A = (rand() % 101);
-				B = (rand() % 101);
-			}
-			TextOut(DeviceContext, 140, 190, " - ", 3);
-			TextOut(DeviceContext, 220, 190, "=", 1);
+			Display_Subtraction();
 		} break;
 		case 2:
 		{
-			if ((SolutionState != 2) && (SolutionState != 3))
-			{
-				A = (rand() % 13);
-				B = (rand() % 13);
-			}
-			TextOut(DeviceContext, 140, 190, "x  ", 3);
-			TextOut(DeviceContext, 220, 190, "=", 1);
+			Display_Multiplication();
 		} break;
 		case 3:
 		{
-			if ((SolutionState != 2) && (SolutionState != 3))
-			{
-				B = (rand() % 13);
-				if (B == 0)
-				{
-					B = 1;
-				}
-
-				A = B * ((unsigned int)rand() % 13);
-			}
-			TextOut(DeviceContext, 140, 190, "%", 1);
-			TextOut(DeviceContext, 220, 190, "=", 1);
+			Display_Division();
 		} break;
 		default: break;
 		}
@@ -164,6 +129,96 @@ void MathState::Display(unsigned int SolutionState)
 
 	SetFocus(EditC);
 }
+
+void MathState::InitEditGroupOne()
+{
+
+
+}
+
+void MathState::Display_Addition()
+{
+	if (!EditA)
+	{
+		EditA = CreateWindowExW(
+			0, L"EDIT", NULL,
+			WS_CHILD | WS_VISIBLE | WS_DLGFRAME |
+			ES_LEFT | ES_READONLY,
+			70, 150, 50, 30, Window, (HMENU)112,
+			(HINSTANCE)GetWindowLong(Window,
+				GWL_HINSTANCE), NULL);
+	}
+	if (!EditB)
+	{
+		EditB = CreateWindowExW(
+			0, L"EDIT", NULL,
+			WS_CHILD | WS_VISIBLE | WS_DLGFRAME |
+			ES_LEFT | ES_READONLY,
+			150, 150, 50, 30, Window, (HMENU)113,
+			(HINSTANCE)GetWindowLong(Window,
+				GWL_HINSTANCE), NULL);
+	}
+	if (!EditC)
+	{
+		EditC = CreateWindowExW(
+			0, L"EDIT", NULL,
+			WS_CHILD | WS_VISIBLE | WS_DLGFRAME |
+			ES_LEFT,
+			230, 150, 50, 30, Window, (HMENU)114,
+			(HINSTANCE)GetWindowLong(Window,
+				GWL_HINSTANCE), NULL);
+	}
+
+	TextOut(DeviceContext, 140, 190, "+  ", 3);
+	TextOut(DeviceContext, 220, 190, "=", 1);
+
+	if ((SolutionState != 2) && (SolutionState != 3))
+	{
+		A = (rand() % 101);
+		B = (rand() % 101);
+	}
+}
+
+void MathState::Display_Subtraction()
+{
+	TextOut(DeviceContext, 140, 190, " - ", 3);
+	TextOut(DeviceContext, 220, 190, "=", 1);
+
+	if ((SolutionState != 2) && (SolutionState != 3))
+	{
+		A = (rand() % 101);
+		B = (rand() % 101);
+	}
+}
+
+void MathState::Display_Multiplication()
+{
+	TextOut(DeviceContext, 140, 190, "x  ", 3);
+	TextOut(DeviceContext, 220, 190, "=", 1);
+
+	if ((SolutionState != 2) && (SolutionState != 3))
+	{
+		A = (rand() % 13);
+		B = (rand() % 13);
+	}
+}
+
+void MathState::Display_Division()
+{
+	TextOut(DeviceContext, 140, 190, "%", 1);
+	TextOut(DeviceContext, 220, 190, "=", 1);
+
+	if ((SolutionState != 2) && (SolutionState != 3))
+	{
+		B = (rand() % 13);
+		if (B == 0)
+		{
+			B = 1;
+		}
+		A = B * ((unsigned int)rand() % 13);
+	}
+}
+
 
 void MathState::Commands(unsigned short Command)
 {

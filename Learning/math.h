@@ -14,7 +14,7 @@ public:
 	void Initialize(HWND window, State *SaveState);
 	void Loop();
 	void Commands(unsigned short Command);
-	void Display(unsigned int SolutionState);
+	void Display();
 	void Display_Addition();
 	void Display_Subtraction();
 	void Display_Multiplication();

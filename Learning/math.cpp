@@ -49,11 +49,13 @@ void MathState::Initialize(HWND window, State *SaveState)
 		A = Save->Numbers[0];
 		B = Save->Numbers[1];
 		ProblemState = Save->Numbers[2];
-		Display(3);
+		SolutionState = 3;
+		Display();
 	}
 	else
 	{
-		Display(0);
+		SolutionState = 0;
+		Display();
 		Save->MathSet = true;
 		Save->Numbers[0] = A;
 		Save->Numbers[1] = B;
@@ -63,7 +65,7 @@ void MathState::Initialize(HWND window, State *SaveState)
 
 void MathState::Loop() {}
 
-void MathState::Display(unsigned int SolutionState)
+void MathState::Display()
 {
 	if ((SolutionState != 2) && (SolutionState != 3))
 	{
@@ -273,7 +275,8 @@ void MathState::CheckAnswer()
 	if (C == UserC)
 	{
 		CorrectCount++;
-		Display(1);
+		SolutionState = 1;
+		Display();
 		Save->Numbers[0] = A;
 		Save->Numbers[1] = B;
 		Save->Numbers[2] = ProblemState;
@@ -281,7 +284,8 @@ void MathState::CheckAnswer()
 	else
 	{
 		WrongCount++;
-		Display(2);
+		SolutionState = 2;
+		Display();
 	}
 }
 

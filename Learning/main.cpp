@@ -38,7 +38,7 @@ int WINAPI WinMain(HINSTANCE Instance, HINSTANCE PrevInstance,
 		WS_EX_CLIENTEDGE,
 		(const char*)"LanguageLearning",
 		"Language Learning",
-		WS_OVERLAPPEDWINDOW | WS_THICKFRAME,
+		WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX | WS_MAXIMIZEBOX,
 		CW_USEDEFAULT, CW_USEDEFAULT, WindowWidth, WindowHeight,
 		NULL, NULL, Instance, NULL);
 

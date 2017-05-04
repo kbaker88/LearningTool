@@ -1,8 +1,8 @@
 #ifndef LANGUAGE_H
 #define LANGUAGE_H
 
+#include "text_window.h"
 #include "math.h"
-
 //TODO: Free Registered windows classes later
 
 struct WordUnit
@@ -18,10 +18,11 @@ struct WordUnit
 class LanguageState
 {
 public:
-	LanguageState() : Window(0), EditWindowOutput(0), EditWindowInput(0),
-		CheckButton(0), CorrectCount(0), WrongCount(0), TotalWordCount(0),
-		CurrentWordChoice(0), DeviceContext(0), DictionaryButton(0),
-		Dictionary(0), DictionaryList(0), Instance(0), Save(0) {}
+	LanguageState() : Window(0), CorrectCount(0), 
+		WrongCount(0), TotalWordCount(0), 
+		CurrentWordChoice(0), DeviceContext(0), 
+		DictionaryWindow(0), DictionaryList(0), 
+		Instance(0), Save(0) {}
 
 	~LanguageState() {}
 
@@ -30,15 +31,15 @@ public:
 	void Loop();
 	void Display();
 	void DisplayDictionary();
-	bool CompareStrings();
-	void CheckClickStates(unsigned short Command);
+	void UpdateStates(WPARAM Command);
 	bool ChangeBackground();
 	void CleanUp();
 
 private:
 	WordUnit Words[256];
-	HWND Window, EditWindowOutput, EditWindowInput,
-		CheckButton, DictionaryButton, Dictionary, DictionaryList;
+	Button Check, Dictionary;
+	TextWindow InputWindow, OutputWindow;
+	HWND Window, DictionaryWindow, DictionaryList;
 	HDC DeviceContext;
 	HINSTANCE Instance;
 	State* Save;

@@ -111,15 +111,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="button.cpp" />
     <ClCompile Include="language.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="math.cpp" />
     <ClCompile Include="state_system.cpp" />
+    <ClCompile Include="text_window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="button.h" />
     <ClInclude Include="Language.h" />
     <ClInclude Include="math.h" />
     <ClInclude Include="state_system.h" />
+    <ClInclude Include="text_window.h" />
     <ClInclude Include="utility.h" />
   </ItemGroup>
   <ItemGroup>

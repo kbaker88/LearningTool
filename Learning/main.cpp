@@ -115,7 +115,7 @@ LRESULT CALLBACK WndProc(HWND Window, UINT Message,
 		}
 
 		unsigned short Command = LOWORD(wParam);
-		RussianToEnglish.CheckClickStates(wParam);
+		RussianToEnglish.UpdateStates(wParam);
 		Math.Commands(wParam);
 		
 	} break;
@@ -125,7 +125,7 @@ LRESULT CALLBACK WndProc(HWND Window, UINT Message,
 		{
 		case VK_RIGHT:
 		{
- 			RussianToEnglish.CheckClickStates(wParam);
+			RussianToEnglish.UpdateStates(wParam);
 			Math.Commands(wParam);
 		} break;
 		}

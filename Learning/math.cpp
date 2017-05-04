@@ -1,5 +1,8 @@
 #include "math.h"
 
+#define C_WIDTH 100
+#define C_HEIGHT 30
+
 void MathState::Initialize(HWND window, State *SaveState)
 {
 	Save = SaveState;
@@ -31,7 +34,7 @@ void MathState::Initialize(HWND window, State *SaveState)
 			0, L"EDIT", NULL,
 			WS_CHILD | WS_VISIBLE | WS_DLGFRAME |
 			ES_LEFT,
-			230, 150, 50, 30, Window, (HMENU)114,
+			230, 150, C_WIDTH, C_HEIGHT, Window, (HMENU)114,
 			(HINSTANCE)GetWindowLong(Window, 
 				GWL_HINSTANCE), NULL);
 	}
@@ -126,8 +129,7 @@ void MathState::Display()
 	SendMessageW(EditB,
 		WM_SETTEXT, 0, (LPARAM)BufferB);
 
-	SendMessageW(EditC, WM_SETTEXT, 0,
-		(LPARAM)"");
+	SetWindowText(EditC, "");
 
 	SetFocus(EditC);
 }
@@ -166,7 +168,7 @@ void MathState::Display_Addition()
 			0, L"EDIT", NULL,
 			WS_CHILD | WS_VISIBLE | WS_DLGFRAME |
 			ES_LEFT,
-			230, 150, 50, 30, Window, (HMENU)114,
+			230, 150, C_WIDTH, C_HEIGHT, Window, (HMENU)114,
 			(HINSTANCE)GetWindowLong(Window,
 				GWL_HINSTANCE), NULL);
 	}
@@ -176,8 +178,8 @@ void MathState::Display_Addition()
 
 	if ((SolutionState != 2) && (SolutionState != 3))
 	{
-		A = (rand() % 101);
-		B = (rand() % 101);
+		A = (rand() % 9999);
+		B = (rand() % 9999);
 	}
 }
 
@@ -188,8 +190,8 @@ void MathState::Display_Subtraction()
 
 	if ((SolutionState != 2) && (SolutionState != 3))
 	{
-		A = (rand() % 101);
-		B = (rand() % 101);
+		A = (rand() % 9999);
+		B = (rand() % 9999);
 	}
 }
 
@@ -200,8 +202,8 @@ void MathState::Display_Multiplication()
 
 	if ((SolutionState != 2) && (SolutionState != 3))
 	{
-		A = (rand() % 13);
-		B = (rand() % 13);
+		A = (rand() % 9999);
+		B = (rand() % 10);
 	}
 }
 

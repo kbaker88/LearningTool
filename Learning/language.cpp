@@ -13,52 +13,21 @@ void LanguageState::Initialize(HWND window, State* SaveState)
 		DeviceContext = GetWindowDC(Window);
 		Instance = (HINSTANCE)GetWindowLong(Window, GWL_HINSTANCE);
 
-		if (!CheckButton)
-		{
-			CheckButton = CreateWindow("BUTTON",
-				"Check",
-				WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-				235, 210, 100, 40, Window, (HMENU)102,
-				(HINSTANCE)GetWindowLong(Window,
-					GWL_HINSTANCE), NULL);
-		}
-
-		if (!DictionaryButton)
-		{
-			DictionaryButton = CreateWindow("BUTTON",
-				"Dictionary >>",
-				WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-				460, 230, 100, 20, Window, (HMENU)104,
-				(HINSTANCE)GetWindowLong(Window,
-					GWL_HINSTANCE), NULL);
-		}
-
-		if (!EditWindowInput)
-		{
-			EditWindowInput = CreateWindowExW(
-				0, L"EDIT", NULL,
-				WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_DLGFRAME |
-				ES_LEFT | ES_AUTOVSCROLL,
-				20, 150, 250, 50, Window, (HMENU)110,
-				(HINSTANCE)GetWindowLong(Window,
-					GWL_HINSTANCE), NULL);
-		}
-
-		if (!EditWindowOutput)
-		{
-			EditWindowOutput = CreateWindowExW(
-				0, L"EDIT", NULL,
-				WS_CHILD | WS_VISIBLE | WS_VSCROLL | WS_DLGFRAME |
-				ES_LEFT | ES_MULTILINE | ES_AUTOVSCROLL| ES_READONLY,
-				310, 150, 250, 50, Window, (HMENU)111,
-				(HINSTANCE)GetWindowLong(Window,
-					GWL_HINSTANCE), NULL);
-		}
+		unsigned char Error = 0;
+		
+		Error = Check.Initialize("Check", (HMENU)102, 100, 40,
+			235, 210, Window);
+		Error = Dictionary.Initialize("Dictionary >>", (HMENU)104, 100, 20,
+			460, 230, Window);
+		Error = InputWindow.Initialize((HMENU)110, 250, 50,
+			20, 150, Window, 0X50400000);
+		Error = OutputWindow.Initialize((HMENU)111, 250, 50,
+			310, 150, Window, 0x50400800);
 
 		if (Save->EnglishSet)
 		{
 			CurrentWordChoice = Save->Words[0];
-			SendMessageW(EditWindowOutput, WM_SETTEXT, 0,
+			SendMessageW(OutputWindow.Window, WM_SETTEXT, 0,
 				(LPARAM)Words[CurrentWordChoice].Russian);
 		}
 		else
@@ -70,128 +39,11 @@ void LanguageState::Initialize(HWND window, State* SaveState)
 				Save->EnglishSet = true;
 				Save->Words[0] = CurrentWordChoice;
 			}
-			SendMessageW(EditWindowOutput, WM_SETTEXT, 0,
+			SendMessageW(OutputWindow.Window, WM_SETTEXT, 0,
 				(LPARAM)Words[CurrentWordChoice].Russian);
 		}
 
-		SetFocus(EditWindowInput);
-
-		/////////// Testing Code/////////////////////
-//
-//		WNDCLASSEX TestWindowClassStruct;
-//
-//		if (!GetClassInfoEx(Instance, "TestWindow", &TestWindowClassStruct))
-//		{
-//			TestWindowClassStruct.cbSize = sizeof(WNDCLASSEX);
-//			TestWindowClassStruct.style = CS_OWNDC;
-//			TestWindowClassStruct.lpfnWndProc = DictionaryProc;
-//			TestWindowClassStruct.cbClsExtra = 0;
-//			TestWindowClassStruct.cbWndExtra = 0;
-//			TestWindowClassStruct.hInstance = Instance;
-//			TestWindowClassStruct.hIcon = 0;
-//			TestWindowClassStruct.hCursor = LoadCursor(NULL, IDC_ARROW);
-//			TestWindowClassStruct.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
-//			TestWindowClassStruct.lpszMenuName = NULL;
-//			TestWindowClassStruct.lpszClassName = "TestWindow";
-//			TestWindowClassStruct.hIconSm = 0;
-//
-//			if (!RegisterClassEx(&TestWindowClassStruct))
-//			{
-//				MessageBox(NULL, "TestWindow Window Registration Failed!",
-//					"Error!", MB_ICONEXCLAMATION | MB_OK);
-//			}
-//		}
-//
-//		RECT WindowRect = {};
-//		GetClientRect(Window, &WindowRect);
-//		MapWindowPoints(Window, GetParent(Window), (LPPOINT)&WindowRect, 2);
-//
-//		HWND TestWindow = CreateWindowExW(
-//			WS_EX_CLIENTEDGE,
-//			L"TestWindow",
-//			L"TestWindow",
-//			WS_BORDER | WS_VISIBLE,
-//			0, 0, 300, 300,
-//			Window, NULL, Instance, NULL);
-//
-//		if (TestWindow)
-//		{
-//			UpdateWindow(TestWindow);
-//			ShowWindow(TestWindow, SW_SHOW);
-//		}
-//		else
-//		{
-//			MessageBox(NULL, "TestWindow Window Did Not Create.",
-//				"Error!", MB_ICONEXCLAMATION | MB_OK);
-//		}
-//
-//		HDC DeviceContext = CreateCompatibleDC(GetDC(TestWindow));
-//		void* Bits = 0;
-//		int BitmapWidth = 1024;
-//		int BitmapHeight = 1024;
-//
-//		BITMAPINFO BitmapInfo = {};
-//		BitmapInfo.bmiHeader.biSize = sizeof(BitmapInfo.bmiHeader);
-//		BitmapInfo.bmiHeader.biWidth = BitmapWidth;
-//		BitmapInfo.bmiHeader.biHeight = BitmapHeight;
-//		BitmapInfo.bmiHeader.biPlanes = 1;
-//		BitmapInfo.bmiHeader.biBitCount = 32;
-//		BitmapInfo.bmiHeader.biCompression = BI_RGB;
-//
-//		HBITMAP Bitmap = CreateDIBSection(DeviceContext,
-//				&BitmapInfo, DIB_RGB_COLORS, &Bits, 0, 0);
-//
-//		SelectObject(DeviceContext, Bitmap);
-//
-//		memset(Bits, 0xFF, BitmapWidth * BitmapHeight * sizeof(unsigned int));
-//
-//		SetBkColor(DeviceContext, RGB(0, 0, 0));
-//
-//		AddFontResourceExA("c:/Windows/Fonts/arial.ttf", FR_PRIVATE, 0);
-//		
-//		HFONT Font = CreateFontA(128, 0, 0, 0, FW_NORMAL,
-//			0, 0, 0, DEFAULT_CHARSET, OUT_DEFAULT_PRECIS,
-//			CLIP_DEFAULT_PRECIS, ANTIALIASED_QUALITY,
-//			DEFAULT_PITCH | FF_DONTCARE, "arial");
-//		
-//		SelectObject((HDC)DeviceContext, Font);
-//		
-//		SIZE Size;
-//		if (!GetTextExtentPoint32W((HDC)DeviceContext, L"T",
-//			1, &Size))
-//		{
-//			// TODO: Error
-//		}
-//		
-//		int Width = Size.cx;
-//		if (Width > BitmapWidth)
-//		{
-//			Width = BitmapWidth;
-//		}
-//		int Height = Size.cy;
-//		if (Height > BitmapHeight)
-//		{
-//			Height = BitmapHeight;
-//		}
-//		
-//		if (SetTextColor((HDC)DeviceContext, RGB(255, 255, 255)) ==
-//			CLR_INVALID)
-//		{
-//			// TODO: Error
-//		}
-//		
-//		if (!TextOutW((HDC)DeviceContext, 0, 0, L"T", 1))
-//		{
-//			// TODO: Error
-//		}
-//	
-//		BitBlt(GetDC(TestWindow), 0, 0, 250, 250,
-//			DeviceContext, 0, 0, SRCCOPY);
-//
-//		DeleteObject(Bitmap);
-//		DeleteObject(Font);
-//		ReleaseDC(TestWindow, DeviceContext);
-		/////////////////END TEST///////////////////////////////////
+		SetFocus(InputWindow.Window);
 	}
 	else
 	{
@@ -245,7 +97,8 @@ bool LanguageState::LoadDatabase(char* FileName)
 						}
 					}
 				}
-				else if (line[i + 1] == 0x2A) // * to skip the wide char line symbols
+				// NOTE: * to skip the wide char line symbols
+				else if (line[i + 1] == 0x2A)
 				{
 					StartRead = true;
 				}
@@ -263,10 +116,42 @@ bool LanguageState::LoadDatabase(char* FileName)
 
 void LanguageState::Loop()
 {
-	if (CheckButton)
+	if (Check.GetState() == 1)
 	{
-		Display();
+		const unsigned int BufferSize = 256;
+		unsigned short StringBuffer1[BufferSize];
+
+		GetWindowTextW(InputWindow.Window, (LPWSTR)StringBuffer1, 
+			BufferSize);
+
+		if (Utility_CompareCharString(Words[CurrentWordChoice].English, 
+			StringBuffer1))
+		{ 
+			CorrectCount++;
+			if (TotalWordCount > 0)
+			{
+				CurrentWordChoice =
+					(unsigned int)(rand() % TotalWordCount);
+				Save->Words[0] = CurrentWordChoice;
+			}
+			SetWindowTextW(OutputWindow.Window,
+				(LPCWSTR)Words[CurrentWordChoice].Russian);
+			SetWindowText(InputWindow.Window, "");
+		}
+		else
+		{
+			WrongCount++;
+			SetWindowTextW(OutputWindow.Window,
+				(LPCWSTR)Words[CurrentWordChoice].Russian);
+			SetWindowText(InputWindow.Window, "");
+		}
+		SetFocus(InputWindow.Window);
 	}
+	if (Dictionary.GetState() == 1)
+	{
+		DisplayDictionary();
+	}
+	Display();
 }
 
 void LanguageState::Display()
@@ -287,84 +172,20 @@ void LanguageState::Display()
 	}
 }
 
-bool LanguageState::CompareStrings()
+void LanguageState::UpdateStates(WPARAM Command)
 {
-	const unsigned int BufferSize = 256;
-	char StringBuffer1[BufferSize];
-
-	GetWindowText(EditWindowInput, StringBuffer1, BufferSize);
-
-	unsigned int Index = 0;
-	if (StringBuffer1[Index] == '\0')
-	{
-		return 0;
-	}
-	while (StringBuffer1[Index] != '\0')
-	{
-		if (Words[CurrentWordChoice].English[Index])
-		{
-			if (StringBuffer1[Index] != 
-				Words[CurrentWordChoice].English[Index])
-			{
-				return 0;
-			}
-			Index++;
-		}
-		else
-		{
-			return 0;
-		}
-	}
-	return 1;
-}
-
-void LanguageState::CheckClickStates(unsigned short Command)
-{
-
-	switch (Command)
-	{
-	case 102:
-	{
-		if (CompareStrings()) // correct
-		{
-			CorrectCount++;
-			if (TotalWordCount > 0)
-			{
-				CurrentWordChoice = 
-					(unsigned int)(rand() % TotalWordCount);
-				Save->Words[0] = CurrentWordChoice;
-			}
-			SendMessageW(EditWindowOutput, WM_SETTEXT, 0, 
-				(LPARAM)Words[CurrentWordChoice].Russian);
-			SendMessageW(EditWindowInput,
-				WM_SETTEXT, 0, (LPARAM)"");
-		}
-		else
-		{
-			WrongCount++;
-			SendMessageW(EditWindowOutput, WM_SETTEXT, 0, 
-				(LPARAM)Words[CurrentWordChoice].Russian);
-			SendMessageW(EditWindowInput,
-				WM_SETTEXT, 0, (LPARAM)"");
-		}
-		SetFocus(EditWindowInput);
-	} break;
-	case 104:
-	{
-		DisplayDictionary();
-	}
-	default: break;
-	}
+	Check.UpdateState(Command);
+	Dictionary.UpdateState(Command);
 }
 
 void LanguageState::DisplayDictionary()
 {
-	if (Dictionary)
+	if (DictionaryWindow)
 	{
 		DestroyWindow(DictionaryList);
 		DictionaryList = 0;
-		DestroyWindow(Dictionary);
-		Dictionary = 0;
+		DestroyWindow(DictionaryWindow);
+		DictionaryWindow = 0;
 	}
 	else
 	{
@@ -379,8 +200,10 @@ void LanguageState::DisplayDictionary()
 			DictWindowClassStruct.cbWndExtra = 0;
 			DictWindowClassStruct.hInstance = Instance;
 			DictWindowClassStruct.hIcon = 0;
-			DictWindowClassStruct.hCursor = LoadCursor(NULL, IDC_ARROW);
-			DictWindowClassStruct.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
+			DictWindowClassStruct.hCursor = 
+				LoadCursor(NULL, IDC_ARROW);
+			DictWindowClassStruct.hbrBackground = 
+				(HBRUSH)(COLOR_WINDOW + 1);
 			DictWindowClassStruct.lpszMenuName = NULL;
 			DictWindowClassStruct.lpszClassName = "Dictionary";
 			DictWindowClassStruct.hIconSm = 0;
@@ -394,21 +217,18 @@ void LanguageState::DisplayDictionary()
 
 		RECT WindowRect = {};
 		GetClientRect(Window, &WindowRect);
-		MapWindowPoints(Window, GetParent(Window), (LPPOINT)&WindowRect, 2);
+		MapWindowPoints(Window, GetParent(Window), 
+			(LPPOINT)&WindowRect, 2);
 
-
-		Dictionary = CreateWindowExW(
-			WS_EX_CLIENTEDGE,
-			L"Dictionary",
-			L"Dictionary",
-			WS_BORDER | WS_VISIBLE,
+		DictionaryWindow = CreateWindowExW( WS_EX_CLIENTEDGE,
+			L"Dictionary", L"Dictionary", WS_BORDER | WS_VISIBLE,
 			WindowRect.right - 8, WindowRect.top - 33, 300, 300,
 			Window, NULL, Instance, NULL);
 
-		if (Dictionary)
+		if (DictionaryWindow)
 		{
-			UpdateWindow(Dictionary);
-			ShowWindow(Dictionary, SW_SHOW);
+			UpdateWindow(DictionaryWindow);
+			ShowWindow(DictionaryWindow, SW_SHOW);
 
 			if (!DictionaryList)
 			{
@@ -416,7 +236,7 @@ void LanguageState::DisplayDictionary()
 					0, L"LISTBOX", NULL,
 					WS_CHILD | WS_VISIBLE | WS_DLGFRAME |
 					ES_LEFT | ES_AUTOVSCROLL | WS_VSCROLL,
-					10, 10, 260, 245, Dictionary, (HMENU)210,
+					10, 10, 260, 245, DictionaryWindow, (HMENU)210,
 					Instance, NULL);
 
 				HFONT hFont = CreateFont(13, 0, 0, 0, FW_DONTCARE, FALSE,
@@ -431,7 +251,9 @@ void LanguageState::DisplayDictionary()
 				{
 					unsigned short Buffer[64] = {};
 					unsigned int Index = 0;
-					for (unsigned int i = 0; i < Words[Word].EnglishLength; i++)
+					for (unsigned int i = 0;
+						i < Words[Word].EnglishLength;
+						i++)
 					{
 						Buffer[i] = Words[Word].English[i];
 						Index++;
@@ -442,7 +264,9 @@ void LanguageState::DisplayDictionary()
 					Index++;
 					Buffer[Index] = 32;
 					Index++;
-					for (unsigned int i = 0; i < Words[Word].RussianLength; i++)
+					for (unsigned int i = 0; 
+						i < Words[Word].RussianLength; 
+						i++)
 					{
 						Buffer[i + Index] = Words[Word].Russian[i];
 					}
@@ -467,17 +291,8 @@ bool LanguageState::ChangeBackground()
 
 void LanguageState::CleanUp()
 {
-	if (CheckButton)
-	{
-		DestroyWindow(CheckButton);
-		CheckButton = 0;
-	}
-
-	if (DictionaryButton)
-	{
-		DestroyWindow(DictionaryButton);
-		DictionaryButton = 0;
-	}
+	Check.Clean();
+	Dictionary.Clean();
 
 	if (DictionaryList)
 	{
@@ -485,23 +300,14 @@ void LanguageState::CleanUp()
 		DictionaryList = 0;
 	}
 
-	if (Dictionary)
+	if (DictionaryWindow)
 	{
-		DestroyWindow(Dictionary);
-		Dictionary = 0;
+		DestroyWindow(DictionaryWindow);
+		DictionaryWindow = 0;
 	}
 
-	if (EditWindowInput)
-	{
-		DestroyWindow(EditWindowInput);
-		EditWindowInput = 0;
-	}
-
-	if (EditWindowOutput)
-	{
-		DestroyWindow(EditWindowOutput);
-		EditWindowOutput = 0;
-	}
+	InputWindow.Clean();
+	OutputWindow.Clean();
 
 	if (DeviceContext)
 	{

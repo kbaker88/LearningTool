@@ -1,7 +1,7 @@
 #ifndef UTILITY_H
 #define UTILITY_H
 
-#include <Windows.h>
+#include "button.h"
 #include <string>
 #include <fstream>
 
@@ -62,6 +62,62 @@ static void Utility_IntToChar(int Number, unsigned short* CharBuffer)
 			CharBuffer =  0;
 		}
 	}
+}
+
+static bool Utility_CompareCharString(unsigned short* StringA, 
+	unsigned short* StringB)
+{
+	if (StringA && StringB)
+	{
+		while (*StringA != '\0')
+		{
+			if (*StringB == '\0')
+			{
+				return 0;
+			}
+			if (*StringA != *StringB)
+			{
+				return 0;
+			}
+			StringB++;
+			StringA++;
+		}
+		if (*StringB != '\0')
+		{
+			return 0;
+		}
+		return 1;
+	}
+
+	return 0;
+}
+
+static bool Utility_CompareCharString(char* StringA, 
+	char* StringB)
+{
+	if (StringA && StringB)
+	{
+		while (*StringA != '\0')
+		{
+			if (*StringB == '\0')
+			{
+				return 0;
+			}
+			if (*StringA != *StringB)
+			{
+				return 0;
+			}
+			StringB++;
+			StringA++;
+		}
+		if (*StringB != '\0')
+		{
+			return 0;
+		}
+		return 1;
+	}
+
+	return 0;
 }
 
 #endif

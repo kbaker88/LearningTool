@@ -2,9 +2,10 @@
   language.cpp
   main.cpp
   math.cpp
-  state_system.cpp
   text_window.cpp
   Generating code
-  All 216 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  0 of 216 functions ( 0.0%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    24 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
-  Learning.vcxproj -> C:\Users\kevin\Documents\GitHub\LearningTool\Release\Learning.exe
+  Learning.vcxproj -> C:\Users\Kevin\Documents\GitHub\LearningTool\Release\Learning.exe

@@ -1,7 +1,6 @@
 #ifndef LANGUAGE_H
 #define LANGUAGE_H
 
-#include "text_window.h"
 #include "math.h"
 //TODO: Free Registered windows classes later
 

@@ -6,14 +6,14 @@
 class MathState
 {
 public:
-	MathState() : Window(0), EditA(0), EditB(0), EditC(0),
-	CheckButton(0), DeviceContext(0), CorrectCount(0),
+	MathState() : Window(0), //EditA(0), EditB(0), EditC(0),
+	DeviceContext(0), CorrectCount(0),
 	WrongCount(0), ProblemState(0), SolutionState(0),
 	A(0), B(0), Save(0), EditDivA(0), EditDivB(0), EditDivC(0) {}
 
 	void Initialize(HWND window, State *SaveState);
 	void Loop();
-	void Commands(unsigned short Command);
+	void UpdateStates(unsigned short Command);
 	void Display();
 	void Display_Addition();
 	void Display_Subtraction();
@@ -25,9 +25,13 @@ public:
 
 private:
 	State* Save;
-	HWND Window, CheckButton;
-	HWND EditA, EditB, EditC;
+	NewWindow ScratchWindow;
+	Button Check, ScratchPad;
+	TextWindow TextA, TextB, TextC;
+	HWND Window;
+	//HWND EditA, EditB, EditC;
 	HWND EditDivA, EditDivB, EditDivC;
+	HINSTANCE Instance;
 
 	HDC DeviceContext;
 	unsigned int CorrectCount, WrongCount, ProblemState, 

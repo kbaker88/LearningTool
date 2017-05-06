@@ -6,6 +6,7 @@ LRESULT CALLBACK DictionaryProc(HWND DictWindow, UINT Message,
 void LanguageState::Initialize(HWND window, State* SaveState)
 {
 	Save = SaveState;
+	SaveState->ActiveModule = 1;
 
 	if (TotalWordCount)
 	{

@@ -3,50 +3,23 @@
 #define C_WIDTH 100
 #define C_HEIGHT 30
 
-void MathState::Initialize(HWND window, State *SaveState)
+void 
+MathState::Initialize(HWND window, State *SaveState)
 {
+	Instance = (HINSTANCE)GetWindowLong(Window, GWL_HINSTANCE);
+
 	Save = SaveState;
+	SaveState->ActiveModule = 2;
 	Window = window;
 	DeviceContext = GetWindowDC(Window);
-	if (!EditA)
-	{
-		EditA = CreateWindowExW(
-			0, L"EDIT", NULL,
-			WS_CHILD | WS_VISIBLE | WS_DLGFRAME |
-			ES_LEFT | ES_READONLY,
-			70, 150, 50, 30, Window, (HMENU)112,
-			(HINSTANCE)GetWindowLong(Window,
-				GWL_HINSTANCE), NULL);
-	}
-	if (!EditB)
-	{
-		EditB = CreateWindowExW(
-			0, L"EDIT", NULL,
-			WS_CHILD | WS_VISIBLE | WS_DLGFRAME |
-			ES_LEFT | ES_READONLY,
-			150, 150, 50, 30, Window, (HMENU)113,
-			(HINSTANCE)GetWindowLong(Window,
-				GWL_HINSTANCE), NULL);
-	}
-	if (!EditC)
-	{
-		EditC = CreateWindowExW(
-			0, L"EDIT", NULL,
-			WS_CHILD | WS_VISIBLE | WS_DLGFRAME |
-			ES_LEFT,
-			230, 150, C_WIDTH, C_HEIGHT, Window, (HMENU)114,
-			(HINSTANCE)GetWindowLong(Window, 
-				GWL_HINSTANCE), NULL);
-	}
-	if (!CheckButton)
-	{
-		CheckButton = CreateWindow("BUTTON",
-			"Check",
-			WS_TABSTOP | WS_VISIBLE | WS_CHILD | BS_DEFPUSHBUTTON,
-			235, 210, 100, 40, Window, (HMENU)103,
-			(HINSTANCE)GetWindowLong(Window,
-				GWL_HINSTANCE), NULL);
-	}
+
+	TextA.Initialize((HMENU)112, 50, C_HEIGHT, 70, 150, Window, 0x50400800);
+	TextB.Initialize((HMENU)113, 50, C_HEIGHT, 150, 150, Window, 0x50400800);
+	TextC.Initialize((HMENU)114, C_WIDTH, C_HEIGHT, 230, 150, Window, 0x50400000);
+
+	Check.Initialize("Check", (HMENU)103, 100, 40, 235, 210, Window);
+	ScratchPad.Initialize("Scratch Pad", (HMENU)105, 100, 20, 460, 230, Window);
+
 	if (Save->MathSet)
 	{
 		A = Save->Numbers[0];
@@ -66,9 +39,28 @@ void MathState::Initialize(HWND window, State *SaveState)
 	}
 }
 
-void MathState::Loop() {}
+void 
+MathState::Loop() 
+{
+	if (Check.GetState() == 1)
+	{
+		CheckAnswer();
+	}
 
-void MathState::Display()
+	if (ScratchPad.GetState() == 1)
+	{
+		RECT WindowRect = {};
+		GetClientRect(Window, &WindowRect);
+		MapWindowPoints(Window, GetParent(Window),
+			(LPPOINT)&WindowRect, 2);
+
+		ScratchWindow.Initialize(WindowRect.right - 8, 
+			WindowRect.top - 33, 0, 0, Window, Instance);
+	}
+}
+
+void 
+MathState::Display()
 {
 	if ((SolutionState != 2) && (SolutionState != 3))
 	{
@@ -124,54 +116,29 @@ void MathState::Display()
 	unsigned short BufferB[16] = {};
 	Utility_IntToChar(A, BufferA);
 	Utility_IntToChar(B, BufferB);
-	SendMessageW(EditA,
+	SendMessageW(TextA.Window,
 		WM_SETTEXT, 0, (LPARAM)BufferA);
-	SendMessageW(EditB,
+	SendMessageW(TextB.Window,
 		WM_SETTEXT, 0, (LPARAM)BufferB);
 
-	SetWindowText(EditC, "");
+	SetWindowText(TextC.Window, "");
 
-	SetFocus(EditC);
+	SetFocus(TextC.Window);
 }
 
-void MathState::InitEditGroupOne()
+void 
+MathState::InitEditGroupOne()
 {
 
 
 }
 
-void MathState::Display_Addition()
+void 
+MathState::Display_Addition()
 {
-	if (!EditA)
-	{
-		EditA = CreateWindowExW(
-			0, L"EDIT", NULL,
-			WS_CHILD | WS_VISIBLE | WS_DLGFRAME |
-			ES_LEFT | ES_READONLY,
-			70, 150, 50, 30, Window, (HMENU)112,
-			(HINSTANCE)GetWindowLong(Window,
-				GWL_HINSTANCE), NULL);
-	}
-	if (!EditB)
-	{
-		EditB = CreateWindowExW(
-			0, L"EDIT", NULL,
-			WS_CHILD | WS_VISIBLE | WS_DLGFRAME |
-			ES_LEFT | ES_READONLY,
-			150, 150, 50, 30, Window, (HMENU)113,
-			(HINSTANCE)GetWindowLong(Window,
-				GWL_HINSTANCE), NULL);
-	}
-	if (!EditC)
-	{
-		EditC = CreateWindowExW(
-			0, L"EDIT", NULL,
-			WS_CHILD | WS_VISIBLE | WS_DLGFRAME |
-			ES_LEFT,
-			230, 150, C_WIDTH, C_HEIGHT, Window, (HMENU)114,
-			(HINSTANCE)GetWindowLong(Window,
-				GWL_HINSTANCE), NULL);
-	}
+	TextA.Initialize((HMENU)112, 50, C_HEIGHT, 70, 150, Window, 0x50400800);
+	TextB.Initialize((HMENU)113, 50, C_HEIGHT, 150, 150, Window, 0x50400800);
+	TextC.Initialize((HMENU)114, C_WIDTH, C_HEIGHT, 230, 150, Window, 0x50400000);
 
 	TextOut(DeviceContext, 140, 190, "+  ", 3);
 	TextOut(DeviceContext, 220, 190, "=", 1);
@@ -183,7 +150,8 @@ void MathState::Display_Addition()
 	}
 }
 
-void MathState::Display_Subtraction()
+void 
+MathState::Display_Subtraction()
 {
 	TextOut(DeviceContext, 140, 190, " - ", 3);
 	TextOut(DeviceContext, 220, 190, "=", 1);
@@ -195,7 +163,8 @@ void MathState::Display_Subtraction()
 	}
 }
 
-void MathState::Display_Multiplication()
+void
+MathState::Display_Multiplication()
 {
 	TextOut(DeviceContext, 140, 190, "x  ", 3);
 	TextOut(DeviceContext, 220, 190, "=", 1);
@@ -207,7 +176,8 @@ void MathState::Display_Multiplication()
 	}
 }
 
-void MathState::Display_Division()
+void 
+MathState::Display_Division()
 {
 	TextOut(DeviceContext, 140, 190, "%", 1);
 	TextOut(DeviceContext, 220, 190, "=", 1);
@@ -224,25 +194,25 @@ void MathState::Display_Division()
 }
 
 
-void MathState::Commands(unsigned short Command)
+void 
+MathState::UpdateStates(unsigned short Command)
 {
-	if (Command == 103)
-	{
-		CheckAnswer();
-	}
+	Check.UpdateState(Command);
+	ScratchPad.UpdateState(Command);
 }
 
-void MathState::CheckAnswer()
+void
+MathState::CheckAnswer()
 {
 	const unsigned int BufferSize = 16;
 	char BufferA[BufferSize] = {};
 	char BufferB[BufferSize] = {};
 	char BufferC[BufferSize] = {};
-	GetWindowText(EditA, BufferA, BufferSize);
+	GetWindowText(TextA.Window, BufferA, BufferSize);
 	A = atoi(BufferA);
-	GetWindowText(EditB, BufferB, BufferSize);
+	GetWindowText(TextB.Window, BufferB, BufferSize);
 	B = atoi(BufferB);
-	GetWindowText(EditC, BufferC, BufferSize);
+	GetWindowText(TextC.Window, BufferC, BufferSize);
 	int UserC = atoi(BufferC);
 	int C = 0;
 
@@ -291,7 +261,8 @@ void MathState::CheckAnswer()
 	}
 }
 
-void MathState::CleanUp()
+void
+MathState::CleanUp()
 {
 	if (Save)
 	{
@@ -301,26 +272,14 @@ void MathState::CleanUp()
 		Save->Numbers[2] = ProblemState;
 	}
 
-	if (CheckButton)
-	{
-		DestroyWindow(CheckButton);
-		CheckButton = 0;
-	}
-	if (EditA)
-	{
-		DestroyWindow(EditA);
-		EditA = 0;
-	}
-	if (EditB)
-	{
-		DestroyWindow(EditB);
-		EditB = 0;
-	}
-	if (EditC)
-	{
-		DestroyWindow(EditC);
-		EditC = 0;
-	}
+	ScratchWindow.Clean();
+	Check.Clean();
+	ScratchPad.Clean();
+
+	TextA.Clean();
+	TextB.Clean();
+	TextC.Clean();
+
 	if (DeviceContext)
 	{
 		std::string ClearLine = "                       ";

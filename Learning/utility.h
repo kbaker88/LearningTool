@@ -1,6 +1,8 @@
 #ifndef UTILITY_H
 #define UTILITY_H
 
+#include "new_window.h"
+#include "text_window.h"
 #include "button.h"
 #include <string>
 #include <fstream>

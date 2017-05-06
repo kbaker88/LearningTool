@@ -81,8 +81,14 @@ int WINAPI WinMain(HINSTANCE Instance, HINSTANCE PrevInstance,
 			TranslateMessage(&Message);
 			DispatchMessage(&Message);
 		}
-		RussianToEnglish.Loop();
-		Math.Loop();
+		if (SaveState.ActiveModule == 1)
+		{
+			RussianToEnglish.Loop();
+		}
+		else if (SaveState.ActiveModule == 2)
+		{
+			Math.Loop();
+		}
 	}
 	return 0;
 }
@@ -116,7 +122,7 @@ LRESULT CALLBACK WndProc(HWND Window, UINT Message,
 
 		unsigned short Command = LOWORD(wParam);
 		RussianToEnglish.UpdateStates(wParam);
-		Math.Commands(wParam);
+		Math.UpdateStates(wParam);
 		
 	} break;
 	case WM_KEYDOWN:
@@ -126,7 +132,7 @@ LRESULT CALLBACK WndProc(HWND Window, UINT Message,
 		case VK_RIGHT:
 		{
 			RussianToEnglish.UpdateStates(wParam);
-			Math.Commands(wParam);
+			Math.UpdateStates(wParam);
 		} break;
 		}
 	} break;

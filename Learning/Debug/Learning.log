@@ -1,7 +1,10 @@
-﻿  state_system.cpp
+﻿  text_window.cpp
+  state_system.cpp
+  new_window.cpp
   math.cpp
   main.cpp
   language.cpp
+  button.cpp
   Generating Code...
-  Learning.vcxproj -> C:\Users\kevin\Documents\GitHub\LearningTool\Debug\Learning.exe
-  Learning.vcxproj -> C:\Users\kevin\Documents\GitHub\LearningTool\Debug\Learning.pdb (Partial PDB)
+  Learning.vcxproj -> C:\Users\Kevin\Documents\GitHub\LearningTool\Debug\Learning.exe
+  Learning.vcxproj -> C:\Users\Kevin\Documents\GitHub\LearningTool\Debug\Learning.pdb (Partial PDB)

@@ -1,7 +1,11 @@
-﻿  math.cpp
+﻿  button.cpp
+  language.cpp
+  main.cpp
+  math.cpp
+  new_window.cpp
+  state_system.cpp
+  text_window.cpp
   Generating code
-  2 of 223 functions ( 0.9%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-    26 functions had inline decision re-evaluated but remain unchanged
+  All 223 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
   Finished generating code
   Learning.vcxproj -> C:\Users\Kevin\Documents\GitHub\LearningTool\Release\Learning.exe

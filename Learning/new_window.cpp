@@ -17,39 +17,34 @@ unsigned char
 NewWindow::Initialize(int SetWidth, int SetHeight, int XPos, 
 	int YPos, HWND ToWindow, HINSTANCE Instance)
 {
-	BelongsToWindow = ToWindow;
-	Width = SetWidth;
-	Height = SetHeight;
-	XPosition = XPos;
-	YPosition = YPos;
-
-	if (Window)
+	if (!Window)
 	{
-		DestroyWindow(Window);
-		Window = 0;
-	}
-	else
-	{
-		WNDCLASSEX WindowClassStruct;
+		BelongsToWindow = ToWindow;
+		Width = SetWidth;
+		Height = SetHeight;
+		XPosition = XPos;
+		YPosition = YPos;
 
-		if (!GetClassInfoEx(Instance, "NewWindow", &WindowClassStruct))
+		WNDCLASSEX NewWindowClassStruct;
+
+		if (!GetClassInfoEx(Instance, "NewWindow", &NewWindowClassStruct))
 		{
-			WindowClassStruct.cbSize = sizeof(WNDCLASSEX);
-			WindowClassStruct.style = CS_OWNDC;
-			WindowClassStruct.lpfnWndProc = NewWindowProc;
-			WindowClassStruct.cbClsExtra = 0;
-			WindowClassStruct.cbWndExtra = 0;
-			WindowClassStruct.hInstance = Instance;
-			WindowClassStruct.hIcon = 0;
-			WindowClassStruct.hCursor =
+			NewWindowClassStruct.cbSize = sizeof(WNDCLASSEX);
+			NewWindowClassStruct.style = CS_OWNDC;
+			NewWindowClassStruct.lpfnWndProc = NewWindowProc;
+			NewWindowClassStruct.cbClsExtra = 0;
+			NewWindowClassStruct.cbWndExtra = 0;
+			NewWindowClassStruct.hInstance = Instance;
+			NewWindowClassStruct.hIcon = 0;
+			NewWindowClassStruct.hCursor =
 				LoadCursor(NULL, IDC_ARROW);
-			WindowClassStruct.hbrBackground =
+			NewWindowClassStruct.hbrBackground =
 				(HBRUSH)(COLOR_WINDOW + 1);
-			WindowClassStruct.lpszMenuName = NULL;
-			WindowClassStruct.lpszClassName = "NewWindow";
-			WindowClassStruct.hIconSm = 0;
+			NewWindowClassStruct.lpszMenuName = NULL;
+			NewWindowClassStruct.lpszClassName = "NewWindow";
+			NewWindowClassStruct.hIconSm = 0;
 
-			if (!RegisterClassEx(&WindowClassStruct))
+			if (!RegisterClassEx(&NewWindowClassStruct))
 			{
 				MessageBox(NULL, "New Window Registration Failed!",
 					"Error!", MB_ICONEXCLAMATION | MB_OK);
@@ -87,7 +82,6 @@ NewWindow::Clean()
 		Window = 0;
 	}
 }
-
 
 LRESULT CALLBACK NewWindowProc(HWND DictWindow, UINT Message,
 	WPARAM wParam, LPARAM lParam)

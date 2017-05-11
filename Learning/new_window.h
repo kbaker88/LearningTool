@@ -14,8 +14,8 @@ public:
 
 	void Clean();
 
-private:
 	HWND Window, BelongsToWindow;
+private:
 	int Width, Height, XPosition, YPosition;
 	unsigned char State;
 };

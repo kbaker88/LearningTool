@@ -67,22 +67,23 @@ static void Utility_IntToChar(int Number, unsigned short* CharBuffer)
 }
 
 static bool Utility_CompareCharString(unsigned short* StringA, 
-	unsigned short* StringB)
+	unsigned short* StringB, unsigned int StrALength)
 {
 	if (StringA && StringB)
 	{
-		while (*StringA != '\0')
+		unsigned int Itr = 0;
+		while (Itr < StrALength)
 		{
 			if (*StringB == '\0')
 			{
 				return 0;
 			}
-			if (*StringA != *StringB)
+			if (StringA[Itr] != *StringB)
 			{
 				return 0;
 			}
+			Itr++;
 			StringB++;
-			StringA++;
 		}
 		if (*StringB != '\0')
 		{

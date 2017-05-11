@@ -47,7 +47,14 @@ void Button::UpdateState(WPARAM Command)
 {
 	if (Command == (WPARAM)ID)
 	{
-		State = 1;
+		if (State == 0)
+		{
+			State = 1;
+		}
+		else if (State == 1)
+		{
+			State = 0;
+		}
 	}
 }
 

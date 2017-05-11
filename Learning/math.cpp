@@ -6,12 +6,12 @@
 void 
 MathState::Initialize(HWND window, State *SaveState)
 {
+	Window = window;
+	DeviceContext = GetWindowDC(Window);
 	Instance = (HINSTANCE)GetWindowLong(Window, GWL_HINSTANCE);
 
 	Save = SaveState;
 	SaveState->ActiveModule = 2;
-	Window = window;
-	DeviceContext = GetWindowDC(Window);
 
 	TextA.Initialize((HMENU)112, 50, C_HEIGHT, 70, 150, Window, 0x50400800);
 	TextB.Initialize((HMENU)113, 50, C_HEIGHT, 150, 150, Window, 0x50400800);
@@ -33,9 +33,6 @@ MathState::Initialize(HWND window, State *SaveState)
 		SolutionState = 0;
 		Display();
 		Save->MathSet = true;
-		Save->Numbers[0] = A;
-		Save->Numbers[1] = B;
-		Save->Numbers[2] = ProblemState;
 	}
 }
 
@@ -54,8 +51,39 @@ MathState::Loop()
 		MapWindowPoints(Window, GetParent(Window),
 			(LPPOINT)&WindowRect, 2);
 
-		ScratchWindow.Initialize(WindowRect.right - 8, 
-			WindowRect.top - 33, 0, 0, Window, Instance);
+		ScratchWindow.Initialize(300, 300,
+			WindowRect.right - 8, WindowRect.top - 33, Window, Instance);
+
+		int x = 0;
+		int y = 100;
+		Col1.Initialize(HMENU(510), 20, 20, x + 30, y + 30, ScratchWindow.Window, 0x50400000);
+		Col2.Initialize(HMENU(511), 20, 20, x + 50, y + 30, ScratchWindow.Window, 0x50400000);
+		Col3.Initialize(HMENU(512), 20, 20, x + 70, y + 30, ScratchWindow.Window, 0x50400000);
+		Col4.Initialize(HMENU(513), 20, 20, x + 90, y + 30, ScratchWindow.Window, 0x50400000);
+		Col5.Initialize(HMENU(514), 20, 20, x + 110, y + 30, ScratchWindow.Window, 0x50400000);
+
+		Carry1.Initialize(HMENU(515), 20, 20, x + 30, y + 10, ScratchWindow.Window, 0x50400000);
+		Carry2.Initialize(HMENU(516), 20, 20, x + 50, y + 10, ScratchWindow.Window, 0x50400000);
+		Carry3.Initialize(HMENU(517), 20, 20, x + 70, y + 10, ScratchWindow.Window, 0x50400000);
+		Carry4.Initialize(HMENU(518), 20, 20, x + 90, y + 10, ScratchWindow.Window, 0x50400000);
+
+		Answer.Initialize(HMENU(519), 100, 20, 30, y + 50, ScratchWindow.Window, 0x50400000);
+	}
+	else if (ScratchPad.GetState() == 0)
+	{
+		Col1.Clean();
+		Col2.Clean();
+		Col3.Clean();
+		Col4.Clean();
+		Col5.Clean();
+
+		Carry1.Clean();
+		Carry2.Clean();
+		Carry3.Clean();
+		Carry4.Clean();
+
+		Answer.Clean();
+		ScratchWindow.Clean();
 	}
 }
 
@@ -124,6 +152,10 @@ MathState::Display()
 	SetWindowText(TextC.Window, "");
 
 	SetFocus(TextC.Window);
+
+	Save->Numbers[0] = A;
+	Save->Numbers[1] = B;
+	Save->Numbers[2] = ProblemState;
 }
 
 void 
@@ -249,9 +281,6 @@ MathState::CheckAnswer()
 		CorrectCount++;
 		SolutionState = 1;
 		Display();
-		Save->Numbers[0] = A;
-		Save->Numbers[1] = B;
-		Save->Numbers[2] = ProblemState;
 	}
 	else
 	{
@@ -271,6 +300,19 @@ MathState::CleanUp()
 		Save->Numbers[1] = B;
 		Save->Numbers[2] = ProblemState;
 	}
+
+	Col1.Clean();
+	Col2.Clean();
+	Col3.Clean();
+	Col4.Clean();
+	Col5.Clean();
+	
+	Carry1.Clean();
+	Carry2.Clean();
+	Carry3.Clean();
+	Carry4.Clean();
+	
+	Answer.Clean();
 
 	ScratchWindow.Clean();
 	Check.Clean();

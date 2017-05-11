@@ -88,7 +88,7 @@ bool LanguageState::LoadDatabase(char* FileName)
 								(line[i] << 8) | line[i + 1];
 							Words[WordUnitIndex].RussianLength++;
 							WordIndex++;
-						}
+						}    
 						else
 						{
 							Words[WordUnitIndex].English[WordIndex] = 
@@ -126,7 +126,7 @@ void LanguageState::Loop()
 			BufferSize);
 
 		if (Utility_CompareCharString(Words[CurrentWordChoice].English, 
-			StringBuffer1))
+			StringBuffer1, Words[CurrentWordChoice].EnglishLength))
 		{ 
 			CorrectCount++;
 			if (TotalWordCount > 0)

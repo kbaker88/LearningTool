@@ -16,9 +16,9 @@ public:
 	unsigned char GetState();
 	void Clean();
 
-private:
 	HWND Window, BelongsToWindow;
 	HMENU ID;
+private:
 	int Width, Height;
 	int XPosition, YPosition;
 	unsigned char State;

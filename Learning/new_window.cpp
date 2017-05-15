@@ -3,18 +3,20 @@
 LRESULT CALLBACK NewWindowProc(HWND DictWindow, UINT Message,
 	WPARAM wParam, LPARAM lParam);
 
-NewWindow::NewWindow()
+NewWindow::
+NewWindow()
 {
 
 }
 
-NewWindow::~NewWindow()
+NewWindow::
+~NewWindow()
 {
 
 }
 
-unsigned char 
-NewWindow::Initialize(int SetWidth, int SetHeight, int XPos, 
+unsigned char NewWindow::
+Initialize(int SetWidth, int SetHeight, int XPos, 
 	int YPos, HWND ToWindow, HINSTANCE Instance)
 {
 	if (!Window)
@@ -68,22 +70,52 @@ NewWindow::Initialize(int SetWidth, int SetHeight, int XPos,
 				"Error!", MB_ICONEXCLAMATION | MB_OK);
 			return 1;
 		}
+		State = 1;
+	}
+	else
+	{
+		Clean();
 	}
 
 	return 0;
 }
 
-void 
-NewWindow::Clean()
+unsigned char NewWindow::
+GetState()
+{
+	return State;
+}
+
+void NewWindow::
+Clean()
 {
 	if (Window)
 	{
 		DestroyWindow(Window);
 		Window = 0;
+		State = 0;
 	}
 }
 
-LRESULT CALLBACK NewWindowProc(HWND DictWindow, UINT Message,
+void NewWindow::
+SetCommand(WPARAM wParam)
+{
+	Command = wParam;
+}
+
+void NewWindow::
+ClearCommand()
+{
+	Command = 0;
+}
+
+//void Window_UpdateStates(NewWindow* Window)
+//{
+//
+//}
+
+LRESULT CALLBACK 
+NewWindowProc(HWND DictWindow, UINT Message,
 	WPARAM wParam, LPARAM lParam)
 {
 	switch (Message)
@@ -94,6 +126,7 @@ LRESULT CALLBACK NewWindowProc(HWND DictWindow, UINT Message,
 		break;
 	case WM_COMMAND:
 	{
+		//SetCommand(wParam);
 	} break;
 	case WM_DESTROY:
 		break;

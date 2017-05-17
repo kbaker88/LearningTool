@@ -112,11 +112,7 @@ MathState::Display()
 {
 	if ((SolutionState != 2) && (SolutionState != 3))
 	{
-		ProblemState = ((unsigned int)rand() % 9);
-		if (ProblemState > 3)
-		{
-			ProblemState = 2;
-		}
+		ProblemState = ((unsigned int)rand() % 4);
 	}
 	//////////////////////////////////////////////////////////////////
 	std::string CorrectNumber = std::to_string(CorrectCount);

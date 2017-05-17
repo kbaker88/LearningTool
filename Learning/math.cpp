@@ -20,6 +20,11 @@ MathState::Initialize(HWND window, State *SaveState)
 	Check.Initialize("Check", (HMENU)103, 100, 40, 235, 210, Window);
 	ScratchPad.Initialize("Scratch Pad", (HMENU)105, 100, 20, 460, 230, Window);
 
+	if ((SolutionState != 2) && (SolutionState != 3))
+	{
+		ProblemState = ((unsigned int)rand() % 4);
+	}
+	
 	if (Save->MathSet)
 	{
 		A = Save->Numbers[0];
@@ -54,7 +59,6 @@ MathState::Loop()
 		ScratchWindow.Initialize(300, 300,
 			WindowRect.right - 8, WindowRect.top - 33, Window, Instance);
 
-	
 		if (ScratchWindow.GetState() == 1)
 		{
 			int ScratchIDs = 510;
@@ -110,10 +114,10 @@ MathState::Loop()
 void 
 MathState::Display()
 {
-	if ((SolutionState != 2) && (SolutionState != 3))
-	{
-		ProblemState = ((unsigned int)rand() % 4);
-	}
+	//if ((SolutionState != 2) && (SolutionState != 3))
+	//{
+	//	ProblemState = ((unsigned int)rand() % 4);
+	//}
 	//////////////////////////////////////////////////////////////////
 	std::string CorrectNumber = std::to_string(CorrectCount);
 	std::string InCorrectNumber = std::to_string(WrongCount);
@@ -181,8 +185,6 @@ MathState::Display()
 void 
 MathState::InitEditGroupOne()
 {
-
-
 }
 
 void 

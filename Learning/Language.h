@@ -8,8 +8,8 @@ struct WordUnit
 {
 	WordUnit() : EnglishLength(0), RussianLength(0) {}
 
-	unsigned short English[64] = {};
-	unsigned short Russian[64] = {};
+	unsigned short English[512] = {};
+	unsigned short Russian[512] = {};
 	unsigned int EnglishLength;
 	unsigned int RussianLength;
 };

@@ -226,7 +226,7 @@ MathState::Display_Multiplication()
 	if ((SolutionState != 2) && (SolutionState != 3))
 	{
 		A = (rand() % 9999);
-		B = (rand() % 100);
+		B = (rand() % 9999);
 	}
 }
 
@@ -238,12 +238,12 @@ MathState::Display_Division()
 
 	if ((SolutionState != 2) && (SolutionState != 3))
 	{
-		B = (rand() % 13);
+		B = (rand() % 20);
 		if (B == 0)
 		{
 			B = 1;
 		}
-		A = B * ((unsigned int)rand() % 13);
+		A = B * ((unsigned int)rand() % 20);
 	}
 }
 
